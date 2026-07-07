@@ -455,6 +455,7 @@
       background-size: cover;
       opacity: var(--bg-image-opacity);
       pointer-events: none;
+      transition: background-image 0.6s ease, opacity 0.3s ease;
     }
 
     .digital-card::after {
@@ -581,6 +582,15 @@
       padding: 0 28px var(--button-bottom-space, 32px);
     }
 
+    .action[data-save] {
+      width: auto;
+      min-width: 154px;
+      padding: 0 22px;
+      border-radius: 999px;
+      flex-basis: min(220px, 100%);
+      margin-top: 2px;
+    }
+
     .action {
       display: inline-grid;
       place-items: center;
@@ -629,9 +639,14 @@
     }
 
     .action svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
+
+    .action[data-save] svg {
       width: 22px;
       height: 22px;
-      fill: currentColor;
     }
 
     .action span {
@@ -641,6 +656,17 @@
       overflow: hidden;
       clip: rect(0 0 0 0);
       white-space: nowrap;
+    }
+
+    .action[data-save] span {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: nowrap;
+      font-size: 15px;
+      letter-spacing: 0;
     }
 
     .empty {
@@ -895,6 +921,10 @@
                 <label for="backgroundUrl">Hosted background URL</label>
                 <input id="backgroundUrl" inputmode="url" placeholder="https://example.com/background.jpg">
               </div>
+              <div class="field">
+                <label for="backgroundSlides">Background slideshow URLs</label>
+                <textarea id="backgroundSlides" maxlength="1200" placeholder="One image URL per line"></textarea>
+              </div>
             </div>
           </div>
 
@@ -903,7 +933,7 @@
             <div class="form-grid">
               <div class="field">
                 <label for="separatorText">Line text</label>
-                <input id="separatorText" maxlength="24" placeholder="Optional">
+                <input id="separatorText" maxlength="100" placeholder="Optional">
               </div>
               <div class="field">
                 <label for="separatorColor">Line color</label>
@@ -978,7 +1008,7 @@
       <div class="link-box">
         <img class="qr" data-qr alt="QR code">
         <input class="share-url" data-url readonly>
-        <p class="share-note">Share URL includes images. Very large images can make QR generation unreliable.</p>
+        <p class="share-note">QR supports hosted logo/background and slideshow URLs. Local uploads stay on this browser.</p>
       </div>
       <div class="card-actions">
         <a class="btn" data-open target="_blank" rel="noopener">Open Card</a>
@@ -1064,6 +1094,7 @@
         buttonBottomSpace: 32,
         logoUrl: "",
         backgroundUrl: "",
+        backgroundSlides: "",
         logo: "",
         background: ""
       },
@@ -1103,6 +1134,7 @@
         buttonBottomSpace: 32,
         logoUrl: "",
         backgroundUrl: "",
+        backgroundSlides: "",
         logo: "",
         background: ""
       }
@@ -1159,6 +1191,7 @@
       buttonBottomSpace: document.querySelector("#buttonBottomSpace"),
       logoUrl: document.querySelector("#logoUrl"),
       backgroundUrl: document.querySelector("#backgroundUrl"),
+      backgroundSlides: document.querySelector("#backgroundSlides"),
       logoUpload: document.querySelector("#logoUpload"),
       backgroundUpload: document.querySelector("#backgroundUpload")
     };
@@ -1258,7 +1291,8 @@
         nt: card.nameTitleSpace,
         bb: card.buttonBottomSpace,
         lu: card.logoUrl,
-        bu: card.backgroundUrl
+        bu: card.backgroundUrl,
+        bl: card.backgroundSlides
       };
     }
 
@@ -1301,6 +1335,7 @@
         buttonBottomSpace: value.bb || 32,
         logoUrl: value.lu || "",
         backgroundUrl: value.bu || "",
+        backgroundSlides: value.bl || "",
         logo: "",
         background: ""
       };
@@ -1407,6 +1442,23 @@
       reader.readAsDataURL(file);
     }
 
+    function backgroundList(card) {
+      const slides = String(card.backgroundSlides || "")
+        .split(/\r?\n/)
+        .map((url) => url.trim())
+        .filter(Boolean);
+      const first = card.backgroundUrl || card.background;
+      return first ? [first, ...slides.filter((url) => url !== first)] : slides;
+    }
+
+    function setCardBackground(cardNode, source) {
+      if (source) {
+        cardNode.style.setProperty("--card-bg", `url("${source}")`);
+      } else {
+        cardNode.style.removeProperty("--card-bg");
+      }
+    }
+
     function draftCard() {
       return {
         id: editingId || "preview",
@@ -1444,6 +1496,7 @@
         buttonBottomSpace: Number(fields.buttonBottomSpace.value),
         logoUrl: fields.logoUrl.value.trim(),
         backgroundUrl: fields.backgroundUrl.value.trim(),
+        backgroundSlides: fields.backgroundSlides.value.trim(),
         logo: draftLogo,
         background: draftBackground
       };
@@ -1477,11 +1530,17 @@
       cardNode.style.setProperty("--button-bottom-space", `${card.buttonBottomSpace || 32}px`);
       cardNode.dataset.buttonStyle = card.buttonStyle || "premium";
 
-      const backgroundSource = card.backgroundUrl || card.background;
+      const backgrounds = backgroundList(card);
       const logoSource = card.logoUrl || card.logo;
 
-      if (backgroundSource) {
-        cardNode.style.setProperty("--card-bg", `url("${backgroundSource}")`);
+      setCardBackground(cardNode, backgrounds[0]);
+
+      if (!options.previewOnly && backgrounds.length > 1) {
+        let slideIndex = 0;
+        window.setInterval(() => {
+          slideIndex = (slideIndex + 1) % backgrounds.length;
+          setCardBackground(cardNode, backgrounds[slideIndex]);
+        }, 3500);
       }
 
       if (logoSource) {
@@ -1587,6 +1646,7 @@
       buttonBottomSpaceValue.textContent = `${fields.buttonBottomSpace.value}px`;
       fields.logoUrl.value = card ? card.logoUrl || "" : "";
       fields.backgroundUrl.value = card ? card.backgroundUrl || "" : "";
+      fields.backgroundSlides.value = card ? card.backgroundSlides || "" : "";
       fields.logoUpload.value = "";
       fields.backgroundUpload.value = "";
       status.textContent = "";
@@ -1721,6 +1781,7 @@
         buttonBottomSpace: Number(fields.buttonBottomSpace.value),
         logoUrl: fields.logoUrl.value.trim(),
         backgroundUrl: fields.backgroundUrl.value.trim(),
+        backgroundSlides: fields.backgroundSlides.value.trim(),
         logo: draftLogo,
         background: draftBackground
       };
@@ -1819,6 +1880,7 @@
       fields.backgroundUpload.value = "";
       fields.logoUrl.value = "";
       fields.backgroundUrl.value = "";
+      fields.backgroundSlides.value = "";
       status.textContent = "Images cleared.";
       renderBuilderPreview();
     });
@@ -1826,6 +1888,7 @@
     document.querySelector("#useGithubImagesBtn").addEventListener("click", () => {
       fields.logoUrl.value = githubLogoUrl;
       fields.backgroundUrl.value = githubBackgroundUrl;
+      fields.backgroundSlides.value = "";
       status.textContent = "GitHub image URLs added.";
       renderBuilderPreview();
     });
