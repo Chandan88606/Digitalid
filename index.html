@@ -1020,7 +1020,7 @@
       <div class="link-box">
         <img class="qr" data-qr alt="QR code">
         <input class="share-url" data-url readonly>
-        <p class="share-note">QR supports hosted logo/background and slideshow URLs. Local uploads stay on this browser.</p>
+        <p class="share-note">Use assets paths or hosted URLs for short QR links. Local uploads stay on this browser.</p>
       </div>
       <div class="card-actions">
         <a class="btn" data-open target="_blank" rel="noopener">Open Card</a>
@@ -1271,44 +1271,49 @@
     }
 
     function compactCard(card) {
-      return {
-        v: 1,
-        n: card.name,
-        c: card.company,
-        r: card.role,
-        p: card.phone,
-        e: card.email,
-        w: card.website,
-        a: card.address,
-        ac: card.accent,
-        btc: card.buttonTextColor,
-        bs: card.buttonStyle,
-        br: card.buttonRadius,
-        bg: card.buttonGap,
-        bo: card.backgroundOpacity,
-        pt: card.phoneText,
-        et: card.emailText,
-        wt: card.websiteText,
-        st: card.saveText,
-        f: card.cardFont,
-        nc: card.nameColor,
-        rc: card.roleColor,
-        ns: card.nameSize,
-        rs: card.roleSize,
-        ls: card.logoScale,
-        bz: card.buttonSize,
-        sx: card.separatorText,
-        sc: card.separatorColor,
-        sw: card.separatorWidth,
-        sk: card.separatorThickness,
-        ts: card.topSpace,
-        ln: card.logoNameSpace,
-        nt: card.nameTitleSpace,
-        bb: card.buttonBottomSpace,
-        lu: card.logoUrl,
-        bu: card.backgroundUrl,
-        bl: card.backgroundSlides
+      const compact = { v: 1 };
+      const put = (key, value, fallback = "") => {
+        if (value === undefined || value === null || value === fallback || value === "") return;
+        compact[key] = value;
       };
+
+      put("n", card.name);
+      put("c", card.company);
+      put("r", card.role);
+      put("p", card.phone);
+      put("e", card.email);
+      put("w", card.website);
+      put("a", card.address);
+      put("ac", card.accent, "#ee5b2a");
+      put("btc", card.buttonTextColor, "#ffffff");
+      put("bs", card.buttonStyle, "premium");
+      put("br", card.buttonRadius, 10);
+      put("bg", card.buttonGap, 13);
+      put("bo", card.backgroundOpacity, 100);
+      put("pt", card.phoneText, "Phone");
+      put("et", card.emailText, "Email");
+      put("wt", card.websiteText, "Website");
+      put("st", card.saveText, "Save Contact");
+      put("f", card.cardFont, "Arial, Helvetica, sans-serif");
+      put("nc", card.nameColor, "#ffffff");
+      put("rc", card.roleColor, "#ffffff");
+      put("ns", card.nameSize, 42);
+      put("rs", card.roleSize, 16);
+      put("ls", card.logoScale, 100);
+      put("bz", card.buttonSize, 58);
+      put("sx", card.separatorText);
+      put("sc", card.separatorColor, "#ee5b2a");
+      put("sw", card.separatorWidth, 180);
+      put("sk", card.separatorThickness, 2);
+      put("ts", card.topSpace, 66);
+      put("ln", card.logoNameSpace, 24);
+      put("nt", card.nameTitleSpace, 0);
+      put("bb", card.buttonBottomSpace, 32);
+      put("lu", card.logoUrl);
+      put("bu", card.backgroundUrl);
+      put("bl", card.backgroundSlides);
+
+      return compact;
     }
 
     function expandCard(value) {
