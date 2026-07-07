@@ -395,7 +395,8 @@
       display: grid;
       place-items: center;
       min-height: 100vh;
-      padding: 28px 16px;
+      padding: 0;
+      background: #101820;
     }
 
     .digital-card {
@@ -411,6 +412,30 @@
       background: #101820;
       box-shadow: 0 28px 60px rgba(12, 22, 30, 0.3);
       isolation: isolate;
+    }
+
+    .public-wrap .digital-card {
+      width: 100vw;
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .public-wrap .card-head {
+      min-height: 52vh;
+      align-content: center;
+      padding: 72px 26px 34px;
+    }
+
+    .public-wrap .contact-actions {
+      width: min(520px, calc(100% - 32px));
+      margin: auto auto 34px;
+      padding: 0;
+    }
+
+    .public-wrap .name {
+      font-size: clamp(34px, 10vw, var(--name-size, 54px));
     }
 
     .digital-card::before {
@@ -1059,6 +1084,14 @@
       return url.toString();
     }
 
+    function localCardUrl(card) {
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
+      url.searchParams.set("card", card.id);
+      return url.toString();
+    }
+
     function qrUrl(card) {
       return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(cardUrl(card))}`;
     }
@@ -1255,6 +1288,7 @@
         const node = listTemplate.content.cloneNode(true);
         const avatar = node.querySelector("[data-avatar]");
         const url = cardUrl(card);
+        const openUrl = localCardUrl(card);
 
         if (card.logo) {
           avatar.innerHTML = `<img src="${card.logo}" alt="">`;
@@ -1267,7 +1301,7 @@
         node.querySelector("[data-role]").textContent = `${card.role || "Digital Card"}${card.company ? " - " + card.company : ""}`;
         node.querySelector("[data-qr]").src = qrUrl(card);
         node.querySelector("[data-url]").value = url;
-        node.querySelector("[data-open]").href = url;
+        node.querySelector("[data-open]").href = openUrl;
         node.querySelector("[data-edit]").addEventListener("click", () => showForm(card));
         node.querySelector("[data-copy]").addEventListener("click", async () => {
           await navigator.clipboard.writeText(url);
