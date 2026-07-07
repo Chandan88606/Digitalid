@@ -907,8 +907,9 @@
 
   <script>
     const storageKey = "digitalCards.v2";
-    const githubLogoUrl = "https://raw.githubusercontent.com/Chandan88606/Digitalid/main/assets/logo.png";
-    const githubBackgroundUrl = "https://raw.githubusercontent.com/Chandan88606/Digitalid/main/assets/background.jpeg";
+    const publicSiteUrl = "https://chandan88606.github.io/Digitalid/";
+    const githubLogoUrl = "assets/logo.png";
+    const githubBackgroundUrl = "assets/background.jpeg";
     const seedCards = [
       {
         id: "chirag-bansal",
@@ -1066,8 +1067,72 @@
       return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
     }
 
+    function compactCard(card) {
+      return {
+        v: 1,
+        n: card.name,
+        c: card.company,
+        r: card.role,
+        p: card.phone,
+        e: card.email,
+        w: card.website,
+        a: card.address,
+        ac: card.accent,
+        btc: card.buttonTextColor,
+        bs: card.buttonStyle,
+        br: card.buttonRadius,
+        bg: card.buttonGap,
+        bo: card.backgroundOpacity,
+        pt: card.phoneText,
+        et: card.emailText,
+        wt: card.websiteText,
+        st: card.saveText,
+        f: card.cardFont,
+        nc: card.nameColor,
+        rc: card.roleColor,
+        ns: card.nameSize,
+        ls: card.logoScale,
+        lu: card.logoUrl,
+        bu: card.backgroundUrl
+      };
+    }
+
+    function expandCard(value) {
+      if (!value || value.v !== 1) return value;
+
+      return {
+        id: `shared-${Date.now()}`,
+        name: value.n || "",
+        company: value.c || "",
+        role: value.r || "",
+        phone: value.p || "",
+        email: value.e || "",
+        website: value.w || "",
+        address: value.a || "",
+        accent: value.ac || "#ee5b2a",
+        buttonTextColor: value.btc || "#ffffff",
+        buttonStyle: value.bs || "premium",
+        buttonRadius: value.br ?? 10,
+        buttonGap: value.bg ?? 13,
+        backgroundOpacity: value.bo ?? 100,
+        phoneText: value.pt || "Phone",
+        emailText: value.et || "Email",
+        websiteText: value.wt || "Website",
+        saveText: value.st || "Save Contact",
+        cardFont: value.f || "Arial, Helvetica, sans-serif",
+        nameColor: value.nc || "#ffffff",
+        roleColor: value.rc || "#ffffff",
+        nameSize: value.ns || 42,
+        logoScale: value.ls || 100,
+        logoUrl: value.lu || "",
+        backgroundUrl: value.bu || "",
+        logo: "",
+        background: ""
+      };
+    }
+
     function encodeSharedCard(card) {
-      const json = JSON.stringify(card);
+      const json = JSON.stringify(compactCard(card));
       const bytes = new TextEncoder().encode(json);
       let binary = "";
 
@@ -1089,7 +1154,7 @@
           bytes[index] = binary.charCodeAt(index);
         }
 
-        return JSON.parse(new TextDecoder().decode(bytes));
+        return expandCard(JSON.parse(new TextDecoder().decode(bytes)));
       } catch {
         return null;
       }
@@ -1097,12 +1162,23 @@
 
     function shareableCard(card) {
       return {
-        ...card
+        ...card,
+        logo: "",
+        background: ""
       };
     }
 
-    function cardUrl(card) {
+    function sharePageUrl() {
+      if (window.location.protocol === "file:") return publicSiteUrl;
+
       const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
+      return url.toString();
+    }
+
+    function cardUrl(card) {
+      const url = new URL(sharePageUrl());
       url.search = "";
       url.hash = "";
       url.searchParams.set("share", encodeSharedCard(shareableCard(card)));
