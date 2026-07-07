@@ -574,9 +574,10 @@
     .contact-actions {
       position: relative;
       z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, var(--button-size, 58px));
       justify-content: center;
+      justify-items: center;
       gap: var(--button-gap, 13px);
       margin-top: var(--title-button-space, 30px);
       padding: 0 28px var(--button-bottom-space, 32px);
@@ -587,7 +588,7 @@
       min-width: 154px;
       padding: 0 22px;
       border-radius: 999px;
-      flex-basis: min(220px, 100%);
+      grid-column: 1 / -1;
       margin-top: 2px;
     }
 
@@ -639,8 +640,8 @@
     }
 
     .action svg {
-      width: 28px;
-      height: 28px;
+      width: calc(var(--button-size, 58px) * 0.58);
+      height: calc(var(--button-size, 58px) * 0.58);
       fill: currentColor;
     }
 
@@ -887,8 +888,8 @@
               <div class="field">
                 <label for="buttonSize">Icon button size</label>
                 <div class="range-line">
-                  <input id="buttonSize" type="range" min="44" max="78" value="58">
-                  <span class="range-value" id="buttonSizeValue">58px</span>
+                  <input id="buttonSize" type="range" min="54" max="96" value="70">
+                  <span class="range-value" id="buttonSizeValue">70px</span>
                 </div>
               </div>
               <div class="field">
@@ -1095,7 +1096,7 @@
         nameSize: 42,
         roleSize: 16,
         logoScale: 100,
-        buttonSize: 58,
+        buttonSize: 70,
         separatorText: "",
         separatorColor: "#ee5b2a",
         separatorWidth: 180,
@@ -1135,7 +1136,7 @@
         nameSize: 42,
         roleSize: 16,
         logoScale: 100,
-        buttonSize: 58,
+        buttonSize: 70,
         separatorText: "",
         separatorColor: "#ee5b2a",
         separatorWidth: 180,
@@ -1300,7 +1301,7 @@
       put("ns", card.nameSize, 42);
       put("rs", card.roleSize, 16);
       put("ls", card.logoScale, 100);
-      put("bz", card.buttonSize, 58);
+      put("bz", card.buttonSize, 70);
       put("sx", card.separatorText);
       put("sc", card.separatorColor, "#ee5b2a");
       put("sw", card.separatorWidth, 180);
@@ -1344,7 +1345,7 @@
         nameSize: value.ns || 42,
         roleSize: value.rs || 16,
         logoScale: value.ls || 100,
-        buttonSize: value.bz || 58,
+        buttonSize: value.bz || 70,
         separatorText: value.sx || "",
         separatorColor: value.sc || "#ee5b2a",
         separatorWidth: value.sw || 180,
@@ -1557,7 +1558,7 @@
       cardNode.style.setProperty("--role-color", card.roleColor || "#ffffff");
       cardNode.style.setProperty("--name-size", `${card.nameSize || 42}px`);
       cardNode.style.setProperty("--role-size", `${card.roleSize || 16}px`);
-      cardNode.style.setProperty("--button-size", `${card.buttonSize || 58}px`);
+      cardNode.style.setProperty("--button-size", `${card.buttonSize || 70}px`);
       cardNode.style.setProperty("--separator-color", card.separatorColor || "#ee5b2a");
       cardNode.style.setProperty("--separator-width", `${card.separatorWidth || 180}px`);
       cardNode.style.setProperty("--separator-thickness", `${card.separatorThickness || 2}px`);
@@ -1662,7 +1663,7 @@
       roleSizeValue.textContent = `${fields.roleSize.value}px`;
       buttonRadiusValue.textContent = `${fields.buttonRadius.value}px`;
       buttonGapValue.textContent = `${fields.buttonGap.value}px`;
-      fields.buttonSize.value = card ? card.buttonSize || 58 : 58;
+      fields.buttonSize.value = card ? card.buttonSize || 70 : 70;
       buttonSizeValue.textContent = `${fields.buttonSize.value}px`;
       backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
       fields.logoScale.value = card ? card.logoScale || 100 : 100;
