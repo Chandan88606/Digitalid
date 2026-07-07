@@ -436,7 +436,7 @@
     }
 
     .public-wrap .contact-actions {
-      width: min(520px, calc(100% - 32px));
+      width: min(420px, calc(100% - 32px));
       margin: auto auto 34px;
       padding: 0;
     }
@@ -473,8 +473,8 @@
       z-index: 1;
       display: grid;
       justify-items: center;
-      gap: 14px;
-      padding: 66px 34px 36px;
+      gap: var(--element-gap, 14px);
+      padding: var(--top-space, 66px) 34px 36px;
       text-align: center;
     }
 
@@ -511,7 +511,7 @@
 
     .name {
       position: relative;
-      margin-top: 24px;
+      margin-top: var(--logo-name-space, 24px);
       padding-bottom: 16px;
       color: var(--name-color, #fff);
       font-family: var(--card-font, Arial, Helvetica, sans-serif);
@@ -536,32 +536,59 @@
       box-shadow: 0 0 18px rgba(255, 255, 255, 0.28);
     }
 
+    .separator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: min(var(--separator-width, 180px), 80%);
+      min-height: 18px;
+      margin-top: var(--separator-space, 10px);
+      color: var(--separator-color, #ffffff);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: "";
+      flex: 1;
+      height: var(--separator-thickness, 2px);
+      border-radius: 999px;
+      background: var(--separator-color, var(--accent));
+    }
+
     .role {
       max-width: 300px;
       color: var(--role-color, rgba(255, 255, 255, 0.88));
       font-family: var(--card-font, Arial, Helvetica, sans-serif);
-      font-size: 16px;
+      font-size: var(--role-size, 16px);
       font-weight: 700;
       line-height: 1.35;
+      margin-top: var(--name-title-space, 0);
       overflow-wrap: anywhere;
     }
 
     .contact-actions {
       position: relative;
       z-index: 1;
-      display: grid;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: var(--button-gap, 13px);
       margin-top: auto;
-      padding: 0 28px 32px;
+      padding: 0 28px var(--button-bottom-space, 32px);
     }
 
     .action {
-      display: grid;
-      grid-template-columns: 34px 1fr 34px;
-      align-items: center;
-      min-height: 56px;
+      display: inline-grid;
+      place-items: center;
+      width: var(--button-size, 58px);
+      height: var(--button-size, 58px);
+      min-height: 0;
       border: 1px solid rgba(255, 255, 255, 0.26);
-      border-radius: var(--button-radius, 10px);
+      border-radius: 50%;
       color: var(--button-text-color, #fff);
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0)),
@@ -602,15 +629,18 @@
     }
 
     .action svg {
-      justify-self: center;
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       fill: currentColor;
     }
 
     .action span {
-      justify-self: center;
-      letter-spacing: 0;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
     }
 
     .empty {
@@ -644,6 +674,22 @@
 
       .name {
         font-size: 32px;
+      }
+
+      .public-wrap .card-head {
+        min-height: 58vh;
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .public-wrap .contact-actions {
+        width: min(360px, calc(100% - 24px));
+        margin-bottom: 22px;
+      }
+
+      .action {
+        width: min(var(--button-size, 58px), 18vw);
+        height: min(var(--button-size, 58px), 18vw);
       }
     }
   </style>
@@ -727,6 +773,13 @@
                 </div>
               </div>
               <div class="field">
+                <label for="roleSize">Title size</label>
+                <div class="range-line">
+                  <input id="roleSize" type="range" min="12" max="30" value="16">
+                  <span class="range-value" id="roleSizeValue">16px</span>
+                </div>
+              </div>
+              <div class="field">
                 <label for="address">Address</label>
                 <textarea id="address"></textarea>
               </div>
@@ -806,6 +859,13 @@
                 </div>
               </div>
               <div class="field">
+                <label for="buttonSize">Icon button size</label>
+                <div class="range-line">
+                  <input id="buttonSize" type="range" min="44" max="78" value="58">
+                  <span class="range-value" id="buttonSizeValue">58px</span>
+                </div>
+              </div>
+              <div class="field">
                 <label for="backgroundOpacity">Background opacity</label>
                 <div class="range-line">
                   <input id="backgroundOpacity" type="range" min="0" max="100" value="100">
@@ -834,6 +894,62 @@
               <div class="field">
                 <label for="backgroundUrl">Hosted background URL</label>
                 <input id="backgroundUrl" inputmode="url" placeholder="https://example.com/background.jpg">
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-group">
+            <div class="editor-group-title">Line & Spacing</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="separatorText">Line text</label>
+                <input id="separatorText" maxlength="24" placeholder="Optional">
+              </div>
+              <div class="field">
+                <label for="separatorColor">Line color</label>
+                <input id="separatorColor" type="color" value="#ee5b2a">
+              </div>
+              <div class="field">
+                <label for="separatorWidth">Line width</label>
+                <div class="range-line">
+                  <input id="separatorWidth" type="range" min="80" max="320" value="180">
+                  <span class="range-value" id="separatorWidthValue">180px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="separatorThickness">Line thickness</label>
+                <div class="range-line">
+                  <input id="separatorThickness" type="range" min="1" max="8" value="2">
+                  <span class="range-value" id="separatorThicknessValue">2px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="topSpace">Top spacing</label>
+                <div class="range-line">
+                  <input id="topSpace" type="range" min="24" max="130" value="66">
+                  <span class="range-value" id="topSpaceValue">66px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="logoNameSpace">Logo to name</label>
+                <div class="range-line">
+                  <input id="logoNameSpace" type="range" min="0" max="70" value="24">
+                  <span class="range-value" id="logoNameSpaceValue">24px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="nameTitleSpace">Name to title</label>
+                <div class="range-line">
+                  <input id="nameTitleSpace" type="range" min="0" max="60" value="0">
+                  <span class="range-value" id="nameTitleSpaceValue">0px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="buttonBottomSpace">Bottom spacing</label>
+                <div class="range-line">
+                  <input id="buttonBottomSpace" type="range" min="12" max="90" value="32">
+                  <span class="range-value" id="buttonBottomSpaceValue">32px</span>
+                </div>
               </div>
             </div>
           </div>
@@ -877,6 +993,7 @@
     <article class="digital-card">
       <div class="card-head">
         <div class="logo" data-logo></div>
+        <div class="separator" data-separator></div>
         <div class="name" data-name></div>
         <div class="role" data-role></div>
       </div>
@@ -934,7 +1051,17 @@
         nameColor: "#ffffff",
         roleColor: "#ffffff",
         nameSize: 42,
+        roleSize: 16,
         logoScale: 100,
+        buttonSize: 58,
+        separatorText: "",
+        separatorColor: "#ee5b2a",
+        separatorWidth: 180,
+        separatorThickness: 2,
+        topSpace: 66,
+        logoNameSpace: 24,
+        nameTitleSpace: 0,
+        buttonBottomSpace: 32,
         logoUrl: "",
         backgroundUrl: "",
         logo: "",
@@ -963,7 +1090,17 @@
         nameColor: "#ffffff",
         roleColor: "#ffffff",
         nameSize: 42,
+        roleSize: 16,
         logoScale: 100,
+        buttonSize: 58,
+        separatorText: "",
+        separatorColor: "#ee5b2a",
+        separatorWidth: 180,
+        separatorThickness: 2,
+        topSpace: 66,
+        logoNameSpace: 24,
+        nameTitleSpace: 0,
+        buttonBottomSpace: 32,
         logoUrl: "",
         backgroundUrl: "",
         logo: "",
@@ -1009,7 +1146,17 @@
       nameColor: document.querySelector("#nameColor"),
       roleColor: document.querySelector("#roleColor"),
       nameSize: document.querySelector("#nameSize"),
+      roleSize: document.querySelector("#roleSize"),
       logoScale: document.querySelector("#logoScale"),
+      buttonSize: document.querySelector("#buttonSize"),
+      separatorText: document.querySelector("#separatorText"),
+      separatorColor: document.querySelector("#separatorColor"),
+      separatorWidth: document.querySelector("#separatorWidth"),
+      separatorThickness: document.querySelector("#separatorThickness"),
+      topSpace: document.querySelector("#topSpace"),
+      logoNameSpace: document.querySelector("#logoNameSpace"),
+      nameTitleSpace: document.querySelector("#nameTitleSpace"),
+      buttonBottomSpace: document.querySelector("#buttonBottomSpace"),
       logoUrl: document.querySelector("#logoUrl"),
       backgroundUrl: document.querySelector("#backgroundUrl"),
       logoUpload: document.querySelector("#logoUpload"),
@@ -1017,9 +1164,17 @@
     };
     const logoScaleValue = document.querySelector("#logoScaleValue");
     const nameSizeValue = document.querySelector("#nameSizeValue");
+    const roleSizeValue = document.querySelector("#roleSizeValue");
     const buttonRadiusValue = document.querySelector("#buttonRadiusValue");
     const buttonGapValue = document.querySelector("#buttonGapValue");
+    const buttonSizeValue = document.querySelector("#buttonSizeValue");
     const backgroundOpacityValue = document.querySelector("#backgroundOpacityValue");
+    const separatorWidthValue = document.querySelector("#separatorWidthValue");
+    const separatorThicknessValue = document.querySelector("#separatorThicknessValue");
+    const topSpaceValue = document.querySelector("#topSpaceValue");
+    const logoNameSpaceValue = document.querySelector("#logoNameSpaceValue");
+    const nameTitleSpaceValue = document.querySelector("#nameTitleSpaceValue");
+    const buttonBottomSpaceValue = document.querySelector("#buttonBottomSpaceValue");
 
     function loadCards() {
       const saved = localStorage.getItem(storageKey);
@@ -1091,7 +1246,17 @@
         nc: card.nameColor,
         rc: card.roleColor,
         ns: card.nameSize,
+        rs: card.roleSize,
         ls: card.logoScale,
+        bz: card.buttonSize,
+        sx: card.separatorText,
+        sc: card.separatorColor,
+        sw: card.separatorWidth,
+        sk: card.separatorThickness,
+        ts: card.topSpace,
+        ln: card.logoNameSpace,
+        nt: card.nameTitleSpace,
+        bb: card.buttonBottomSpace,
         lu: card.logoUrl,
         bu: card.backgroundUrl
       };
@@ -1123,7 +1288,17 @@
         nameColor: value.nc || "#ffffff",
         roleColor: value.rc || "#ffffff",
         nameSize: value.ns || 42,
+        roleSize: value.rs || 16,
         logoScale: value.ls || 100,
+        buttonSize: value.bz || 58,
+        separatorText: value.sx || "",
+        separatorColor: value.sc || "#ee5b2a",
+        separatorWidth: value.sw || 180,
+        separatorThickness: value.sk || 2,
+        topSpace: value.ts || 66,
+        logoNameSpace: value.ln ?? 24,
+        nameTitleSpace: value.nt ?? 0,
+        buttonBottomSpace: value.bb || 32,
         logoUrl: value.lu || "",
         backgroundUrl: value.bu || "",
         logo: "",
@@ -1256,7 +1431,17 @@
         nameColor: fields.nameColor.value,
         roleColor: fields.roleColor.value,
         nameSize: Number(fields.nameSize.value),
+        roleSize: Number(fields.roleSize.value),
         logoScale: Number(fields.logoScale.value),
+        buttonSize: Number(fields.buttonSize.value),
+        separatorText: fields.separatorText.value.trim(),
+        separatorColor: fields.separatorColor.value,
+        separatorWidth: Number(fields.separatorWidth.value),
+        separatorThickness: Number(fields.separatorThickness.value),
+        topSpace: Number(fields.topSpace.value),
+        logoNameSpace: Number(fields.logoNameSpace.value),
+        nameTitleSpace: Number(fields.nameTitleSpace.value),
+        buttonBottomSpace: Number(fields.buttonBottomSpace.value),
         logoUrl: fields.logoUrl.value.trim(),
         backgroundUrl: fields.backgroundUrl.value.trim(),
         logo: draftLogo,
@@ -1281,6 +1466,15 @@
       cardNode.style.setProperty("--name-color", card.nameColor || "#ffffff");
       cardNode.style.setProperty("--role-color", card.roleColor || "#ffffff");
       cardNode.style.setProperty("--name-size", `${card.nameSize || 42}px`);
+      cardNode.style.setProperty("--role-size", `${card.roleSize || 16}px`);
+      cardNode.style.setProperty("--button-size", `${card.buttonSize || 58}px`);
+      cardNode.style.setProperty("--separator-color", card.separatorColor || "#ee5b2a");
+      cardNode.style.setProperty("--separator-width", `${card.separatorWidth || 180}px`);
+      cardNode.style.setProperty("--separator-thickness", `${card.separatorThickness || 2}px`);
+      cardNode.style.setProperty("--top-space", `${card.topSpace || 66}px`);
+      cardNode.style.setProperty("--logo-name-space", `${card.logoNameSpace ?? 24}px`);
+      cardNode.style.setProperty("--name-title-space", `${card.nameTitleSpace ?? 0}px`);
+      cardNode.style.setProperty("--button-bottom-space", `${card.buttonBottomSpace || 32}px`);
       cardNode.dataset.buttonStyle = card.buttonStyle || "premium";
 
       const backgroundSource = card.backgroundUrl || card.background;
@@ -1306,6 +1500,7 @@
 
       node.querySelector("[data-name]").textContent = card.name;
       node.querySelector("[data-role]").textContent = card.role;
+      node.querySelector("[data-separator]").textContent = card.separatorText || "";
       node.querySelector("[data-phone] span").textContent = card.phoneText || "Phone";
       node.querySelector("[data-email] span").textContent = card.emailText || "Email";
       node.querySelector("[data-website] span").textContent = card.websiteText || "Website";
@@ -1367,11 +1562,29 @@
       fields.roleColor.value = card ? card.roleColor || "#ffffff" : "#ffffff";
       fields.nameSize.value = card ? card.nameSize || 42 : 42;
       nameSizeValue.textContent = `${fields.nameSize.value}px`;
+      fields.roleSize.value = card ? card.roleSize || 16 : 16;
+      roleSizeValue.textContent = `${fields.roleSize.value}px`;
       buttonRadiusValue.textContent = `${fields.buttonRadius.value}px`;
       buttonGapValue.textContent = `${fields.buttonGap.value}px`;
+      fields.buttonSize.value = card ? card.buttonSize || 58 : 58;
+      buttonSizeValue.textContent = `${fields.buttonSize.value}px`;
       backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
       fields.logoScale.value = card ? card.logoScale || 100 : 100;
       logoScaleValue.textContent = `${fields.logoScale.value}%`;
+      fields.separatorText.value = card ? card.separatorText || "" : "";
+      fields.separatorColor.value = card ? card.separatorColor || "#ee5b2a" : "#ee5b2a";
+      fields.separatorWidth.value = card ? card.separatorWidth || 180 : 180;
+      separatorWidthValue.textContent = `${fields.separatorWidth.value}px`;
+      fields.separatorThickness.value = card ? card.separatorThickness || 2 : 2;
+      separatorThicknessValue.textContent = `${fields.separatorThickness.value}px`;
+      fields.topSpace.value = card ? card.topSpace || 66 : 66;
+      topSpaceValue.textContent = `${fields.topSpace.value}px`;
+      fields.logoNameSpace.value = card ? card.logoNameSpace ?? 24 : 24;
+      logoNameSpaceValue.textContent = `${fields.logoNameSpace.value}px`;
+      fields.nameTitleSpace.value = card ? card.nameTitleSpace ?? 0 : 0;
+      nameTitleSpaceValue.textContent = `${fields.nameTitleSpace.value}px`;
+      fields.buttonBottomSpace.value = card ? card.buttonBottomSpace || 32 : 32;
+      buttonBottomSpaceValue.textContent = `${fields.buttonBottomSpace.value}px`;
       fields.logoUrl.value = card ? card.logoUrl || "" : "";
       fields.backgroundUrl.value = card ? card.backgroundUrl || "" : "";
       fields.logoUpload.value = "";
@@ -1495,7 +1708,17 @@
         nameColor: fields.nameColor.value,
         roleColor: fields.roleColor.value,
         nameSize: Number(fields.nameSize.value),
+        roleSize: Number(fields.roleSize.value),
         logoScale: Number(fields.logoScale.value),
+        buttonSize: Number(fields.buttonSize.value),
+        separatorText: fields.separatorText.value.trim(),
+        separatorColor: fields.separatorColor.value,
+        separatorWidth: Number(fields.separatorWidth.value),
+        separatorThickness: Number(fields.separatorThickness.value),
+        topSpace: Number(fields.topSpace.value),
+        logoNameSpace: Number(fields.logoNameSpace.value),
+        nameTitleSpace: Number(fields.nameTitleSpace.value),
+        buttonBottomSpace: Number(fields.buttonBottomSpace.value),
         logoUrl: fields.logoUrl.value.trim(),
         backgroundUrl: fields.backgroundUrl.value.trim(),
         logo: draftLogo,
@@ -1543,6 +1766,10 @@
       nameSizeValue.textContent = `${fields.nameSize.value}px`;
     });
 
+    fields.roleSize.addEventListener("input", () => {
+      roleSizeValue.textContent = `${fields.roleSize.value}px`;
+    });
+
     fields.buttonRadius.addEventListener("input", () => {
       buttonRadiusValue.textContent = `${fields.buttonRadius.value}px`;
     });
@@ -1551,8 +1778,36 @@
       buttonGapValue.textContent = `${fields.buttonGap.value}px`;
     });
 
+    fields.buttonSize.addEventListener("input", () => {
+      buttonSizeValue.textContent = `${fields.buttonSize.value}px`;
+    });
+
     fields.backgroundOpacity.addEventListener("input", () => {
       backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
+    });
+
+    fields.separatorWidth.addEventListener("input", () => {
+      separatorWidthValue.textContent = `${fields.separatorWidth.value}px`;
+    });
+
+    fields.separatorThickness.addEventListener("input", () => {
+      separatorThicknessValue.textContent = `${fields.separatorThickness.value}px`;
+    });
+
+    fields.topSpace.addEventListener("input", () => {
+      topSpaceValue.textContent = `${fields.topSpace.value}px`;
+    });
+
+    fields.logoNameSpace.addEventListener("input", () => {
+      logoNameSpaceValue.textContent = `${fields.logoNameSpace.value}px`;
+    });
+
+    fields.nameTitleSpace.addEventListener("input", () => {
+      nameTitleSpaceValue.textContent = `${fields.nameTitleSpace.value}px`;
+    });
+
+    fields.buttonBottomSpace.addEventListener("input", () => {
+      buttonBottomSpaceValue.textContent = `${fields.buttonBottomSpace.value}px`;
     });
 
     document.querySelector("#createBtn").addEventListener("click", () => showForm());
