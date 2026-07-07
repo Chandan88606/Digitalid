@@ -1,0 +1,1362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Card Manager</title>
+  <style>
+    :root {
+      --ink: #182229;
+      --muted: #64727d;
+      --line: #dce3e8;
+      --panel: #ffffff;
+      --page: #f3f5f7;
+      --accent: #ee5b2a;
+      --accent-dark: #c84519;
+      --bg-image-opacity: 1;
+      --green: #1f7a4d;
+      --shadow: 0 16px 36px rgba(23, 35, 45, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: var(--page);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 4px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .muted {
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      border: 0;
+      border-radius: 7px;
+      padding: 0 16px;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      background: var(--accent-dark);
+      outline: 2px solid rgba(238, 91, 42, 0.22);
+      outline-offset: 2px;
+    }
+
+    .btn.secondary {
+      background: #25313a;
+    }
+
+    .btn.ghost {
+      color: var(--ink);
+      background: #e7edf1;
+    }
+
+    .btn.green {
+      background: var(--green);
+    }
+
+    .btn.danger {
+      background: #b42318;
+    }
+
+    .btn.danger:hover,
+    .btn.danger:focus-visible {
+      background: #8f1d14;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .list-card,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(28, 43, 54, 0.08);
+    }
+
+    .list-card {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .person-line {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .avatar,
+    .logo {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 900;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      font-size: 20px;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .person-line h2 {
+      margin-bottom: 3px;
+      font-size: 19px;
+      overflow-wrap: anywhere;
+    }
+
+    .person-line p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .link-box {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 7px;
+      background: #f7f9fa;
+      border: 1px solid var(--line);
+    }
+
+    .share-url {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px;
+      color: #3c4c57;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .qr {
+      width: 142px;
+      height: 142px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      justify-self: start;
+    }
+
+    .card-actions,
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      padding: 0;
+    }
+
+    .builder-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 20px;
+      color: #fff;
+      background: #141414;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .builder-topbar h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .builder-topbar .muted {
+      color: #c9d0d5;
+      font-size: 14px;
+    }
+
+    .builder-body {
+      display: grid;
+      grid-template-columns: minmax(360px, 1fr) 390px;
+      min-height: 640px;
+    }
+
+    .preview-stage {
+      display: grid;
+      align-content: start;
+      justify-items: center;
+      gap: 16px;
+      padding: 28px;
+      background: #f6f7f8;
+      border-right: 1px solid var(--line);
+    }
+
+    .mode-tabs {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 2px solid #343434;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .mode-tabs button {
+      min-height: 32px;
+      border: 0;
+      padding: 0 18px;
+      color: #1f292f;
+      background: transparent;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .mode-tabs button.active {
+      color: #fff;
+      background: #343434;
+    }
+
+    .preview-card-wrap {
+      width: min(440px, 100%);
+      padding-top: 24px;
+    }
+
+    .editor-panel {
+      padding: 20px;
+      background: #eeeeee;
+      overflow-y: auto;
+    }
+
+    .editor-panel h3 {
+      margin-bottom: 16px;
+      font-size: 22px;
+    }
+
+    .editor-group {
+      margin-bottom: 16px;
+      padding: 16px;
+      border: 1px solid #d3d8dc;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .editor-group-title {
+      margin-bottom: 13px;
+      font-weight: 900;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #34434d;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px 11px;
+      color: var(--ink);
+      background: #fbfcfd;
+    }
+
+    textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      border-style: dashed;
+      background: #f8fafb;
+    }
+
+    input[type="color"] {
+      height: 42px;
+      padding: 4px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+      padding: 0;
+    }
+
+    .range-line {
+      display: grid;
+      grid-template-columns: 1fr 54px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .range-value {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .status {
+      min-height: 20px;
+      margin-top: 12px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .public-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 28px 16px;
+    }
+
+    .digital-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: min(440px, 100%);
+      min-height: 640px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 18px;
+      color: #fff;
+      background: #101820;
+      box-shadow: 0 28px 60px rgba(12, 22, 30, 0.3);
+      isolation: isolate;
+    }
+
+    .digital-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: var(--card-bg, linear-gradient(140deg, #19525f 0%, #101820 48%, #7a2f21 100%));
+      background-position: center;
+      background-size: cover;
+      opacity: var(--bg-image-opacity);
+      pointer-events: none;
+    }
+
+    .digital-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(180deg, rgba(8, 14, 18, 0.18), rgba(8, 14, 18, 0.62)),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 30%);
+      pointer-events: none;
+    }
+
+    .card-head {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      padding: 66px 34px 36px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 104px;
+      height: 104px;
+      color: var(--accent);
+      background: transparent;
+      font-size: 32px;
+    }
+
+    .logo.has-image {
+      overflow: visible;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: scale(var(--logo-scale, 1));
+      transform-origin: center;
+    }
+
+    .logo.initials {
+      border: 3px solid rgba(255, 255, 255, 0.82);
+      border-radius: 50%;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+    }
+
+    .name {
+      position: relative;
+      margin-top: 24px;
+      padding-bottom: 16px;
+      color: var(--name-color, #fff);
+      font-family: var(--card-font, Arial, Helvetica, sans-serif);
+      font-size: var(--name-size, 42px);
+      line-height: 0.98;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.62);
+      overflow-wrap: anywhere;
+    }
+
+    .name::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: min(132px, 72%);
+      height: 3px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: var(--underline-color, var(--accent));
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.28);
+    }
+
+    .role {
+      max-width: 300px;
+      color: var(--role-color, rgba(255, 255, 255, 0.88));
+      font-family: var(--card-font, Arial, Helvetica, sans-serif);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-actions {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: var(--button-gap, 13px);
+      margin-top: auto;
+      padding: 0 28px 32px;
+    }
+
+    .action {
+      display: grid;
+      grid-template-columns: 34px 1fr 34px;
+      align-items: center;
+      min-height: 56px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: var(--button-radius, 10px);
+      color: var(--button-text-color, #fff);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0)),
+        var(--button-color, var(--accent));
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .digital-card[data-button-style="outline"] .action {
+      border: 2px solid var(--button-color, var(--accent));
+      color: var(--button-color, var(--accent));
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .digital-card[data-button-style="glass"] .action {
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      color: var(--button-text-color, #fff);
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .digital-card[data-button-style="flat"] .action {
+      border: 0;
+      box-shadow: none;
+      background: var(--button-color, var(--accent));
+    }
+
+    .action:hover,
+    .action:focus-visible {
+      filter: brightness(0.94);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.34);
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 2px;
+    }
+
+    .action svg {
+      justify-self: center;
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .action span {
+      justify-self: center;
+      letter-spacing: 0;
+    }
+
+    .empty {
+      padding: 28px;
+      color: var(--muted);
+      background: #fff;
+      border: 1px dashed #aebac3;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .builder-body {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-stage {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .name {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" id="adminView">
+    <div class="topbar">
+      <div>
+        <h1>Digital Cards</h1>
+        <p class="muted">Create one card, feed details, save it, then share that person by QR.</p>
+      </div>
+      <button class="btn" id="createBtn" type="button">Create Card</button>
+    </div>
+
+    <section id="mainView">
+      <div class="grid" id="cardList"></div>
+    </section>
+
+    <section class="panel hidden" id="formView" aria-label="Create card">
+      <div class="builder-topbar">
+        <div>
+          <h2 id="formTitle">Create Card</h2>
+          <p class="muted">Feed details, review the live card, then save for QR sharing.</p>
+        </div>
+        <div class="form-actions">
+          <button class="btn ghost" id="backBtn" type="button">Back</button>
+          <button class="btn" form="cardForm" type="submit">Save Card</button>
+        </div>
+      </div>
+
+      <div class="builder-body">
+        <div class="preview-stage">
+          <div class="mode-tabs" aria-label="Preview mode">
+            <button class="active" type="button">Card</button>
+            <button type="button">QR Ready</button>
+          </div>
+          <div class="preview-card-wrap" id="builderPreview"></div>
+        </div>
+
+        <form class="editor-panel" id="cardForm">
+          <h3>Edit Content</h3>
+
+          <div class="editor-group">
+            <div class="editor-group-title">Profile</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="fullName">Name</label>
+                <input id="fullName" required maxlength="70">
+              </div>
+              <div class="field">
+                <label for="company">Company</label>
+                <input id="company" maxlength="80">
+              </div>
+              <div class="field">
+                <label for="role">Title</label>
+                <input id="role" maxlength="90">
+              </div>
+              <div class="field">
+                <label for="cardFont">Font</label>
+                <select id="cardFont">
+                  <option value="Arial, Helvetica, sans-serif">Arial</option>
+                  <option value="'Trebuchet MS', Arial, sans-serif">Trebuchet</option>
+                  <option value="Georgia, serif">Georgia</option>
+                  <option value="'Times New Roman', serif">Times</option>
+                  <option value="'Courier New', monospace">Courier</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="nameColor">Name color</label>
+                <input id="nameColor" type="color" value="#ffffff">
+              </div>
+              <div class="field">
+                <label for="roleColor">Title color</label>
+                <input id="roleColor" type="color" value="#ffffff">
+              </div>
+              <div class="field">
+                <label for="nameSize">Name size</label>
+                <div class="range-line">
+                  <input id="nameSize" type="range" min="26" max="58" value="42">
+                  <span class="range-value" id="nameSizeValue">42px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="address">Address</label>
+                <textarea id="address"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-group">
+            <div class="editor-group-title">Contact Links</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" inputmode="tel">
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" inputmode="email">
+              </div>
+              <div class="field">
+                <label for="website">Website</label>
+                <input id="website" inputmode="url">
+              </div>
+              <div class="field">
+                <label for="phoneText">Phone button text</label>
+                <input id="phoneText" value="Phone" maxlength="24">
+              </div>
+              <div class="field">
+                <label for="emailText">Email button text</label>
+                <input id="emailText" value="Email" maxlength="24">
+              </div>
+              <div class="field">
+                <label for="websiteText">Website button text</label>
+                <input id="websiteText" value="Website" maxlength="24">
+              </div>
+              <div class="field">
+                <label for="saveText">Save button text</label>
+                <input id="saveText" value="Save Contact" maxlength="24">
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-group">
+            <div class="editor-group-title">Style, Logo & Background</div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="accent">Button color</label>
+                <input id="accent" type="color" value="#ee5b2a">
+              </div>
+              <div class="field">
+                <label for="buttonTextColor">Button text color</label>
+                <input id="buttonTextColor" type="color" value="#ffffff">
+              </div>
+              <div class="field">
+                <label for="buttonStyle">Button design</label>
+                <select id="buttonStyle">
+                  <option value="premium">Premium</option>
+                  <option value="flat">Flat</option>
+                  <option value="outline">Outline</option>
+                  <option value="glass">Glass</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="buttonRadius">Box corner</label>
+                <div class="range-line">
+                  <input id="buttonRadius" type="range" min="0" max="28" value="10">
+                  <span class="range-value" id="buttonRadiusValue">10px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="buttonGap">Button spacing</label>
+                <div class="range-line">
+                  <input id="buttonGap" type="range" min="6" max="30" value="13">
+                  <span class="range-value" id="buttonGapValue">13px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="backgroundOpacity">Background opacity</label>
+                <div class="range-line">
+                  <input id="backgroundOpacity" type="range" min="0" max="100" value="100">
+                  <span class="range-value" id="backgroundOpacityValue">100%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="logoUpload">Logo</label>
+                <input id="logoUpload" type="file" accept="image/*">
+              </div>
+              <div class="field">
+                <label for="logoScale">Logo scale</label>
+                <div class="range-line">
+                  <input id="logoScale" type="range" min="60" max="180" value="100">
+                  <span class="range-value" id="logoScaleValue">100%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="backgroundUpload">Background image</label>
+                <input id="backgroundUpload" type="file" accept="image/*">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn green" type="submit">Save Card</button>
+            <button class="btn ghost" id="clearImagesBtn" type="button">Clear Images</button>
+          </div>
+          <div class="status" id="status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <main class="public-wrap hidden" id="publicView"></main>
+
+  <template id="listTemplate">
+    <article class="list-card">
+      <div class="person-line">
+        <div class="avatar" data-avatar></div>
+        <div>
+          <h2 data-name></h2>
+          <p data-role></p>
+        </div>
+      </div>
+      <div class="link-box">
+        <img class="qr" data-qr alt="QR code">
+        <input class="share-url" data-url readonly>
+      </div>
+      <div class="card-actions">
+        <a class="btn" data-open target="_blank" rel="noopener">Open Card</a>
+        <button class="btn secondary" data-edit type="button">Edit</button>
+        <button class="btn ghost" data-copy type="button">Copy Link</button>
+        <button class="btn danger" data-delete type="button">Delete</button>
+      </div>
+    </article>
+  </template>
+
+  <template id="publicTemplate">
+    <article class="digital-card">
+      <div class="card-head">
+        <div class="logo" data-logo></div>
+        <div class="name" data-name></div>
+        <div class="role" data-role></div>
+      </div>
+      <div class="contact-actions">
+        <a class="action" data-phone>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.28-.28.67-.36 1.03-.24 1.14.38 2.36.59 3.56.59.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.2.2 2.42.59 3.56.11.36.03.75-.25 1.03l-2.22 2.2Z"/></svg>
+          <span>Phone</span>
+          <i></i>
+        </a>
+        <a class="action" data-email>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm-.4 4.25-7.07 4.42a1 1 0 0 1-1.06 0L4.4 8.25a1 1 0 1 1 1.06-1.7L12 10.64l6.54-4.09a1 1 0 1 1 1.06 1.7Z"/></svg>
+          <span>Email</span>
+          <i></i>
+        </a>
+        <a class="action" data-website target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.93 9h-3.02a15.3 15.3 0 0 0-1.1-5.05A8.03 8.03 0 0 1 18.93 11ZM12 4.04c.83 1.2 1.55 3.56 1.85 6.96h-3.7c.3-3.4 1.02-5.76 1.85-6.96ZM4.26 13h3.73c.1 1.75.39 3.39.84 4.77A8.03 8.03 0 0 1 4.26 13Zm3.73-2H4.26a8.03 8.03 0 0 1 4.57-4.77A17.3 17.3 0 0 0 7.99 11ZM12 19.96c-.83-1.2-1.55-3.56-1.85-6.96h3.7c-.3 3.4-1.02 5.76-1.85 6.96Zm3.17-2.19c.45-1.38.74-3.02.84-4.77h3.73a8.03 8.03 0 0 1-4.57 4.77Z"/></svg>
+          <span>Website</span>
+          <i></i>
+        </a>
+        <button class="action" data-save type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2ZM19 9h-4V3H9v6H5l7 7 7-7Z"/></svg>
+          <span>Save Contact</span>
+          <i></i>
+        </button>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    const storageKey = "digitalCards.v2";
+    const seedCards = [
+      {
+        id: "chirag-bansal",
+        name: "Chirag Bansal",
+        company: "The Imperial Bus Company",
+        role: "Owner and Transport Operator",
+        phone: "+91 98765 43210",
+        email: "chirag@example.com",
+        website: "https://example.com",
+        address: "New Delhi, India",
+        accent: "#ee5b2a",
+        buttonTextColor: "#ffffff",
+        buttonStyle: "premium",
+        buttonRadius: 10,
+        buttonGap: 13,
+        backgroundOpacity: 100,
+        phoneText: "Phone",
+        emailText: "Email",
+        websiteText: "Website",
+        saveText: "Save Contact",
+        cardFont: "Arial, Helvetica, sans-serif",
+        nameColor: "#ffffff",
+        roleColor: "#ffffff",
+        nameSize: 42,
+        logoScale: 100,
+        logo: "",
+        background: ""
+      },
+      {
+        id: "anirudh-singhal",
+        name: "Anirudh Singhal",
+        company: "Digital ID",
+        role: "Business Development",
+        phone: "+91 98765 43211",
+        email: "anirudh@example.com",
+        website: "https://example.com",
+        address: "India",
+        accent: "#2f6f8f",
+        buttonTextColor: "#ffffff",
+        buttonStyle: "premium",
+        buttonRadius: 10,
+        buttonGap: 13,
+        backgroundOpacity: 100,
+        phoneText: "Phone",
+        emailText: "Email",
+        websiteText: "Website",
+        saveText: "Save Contact",
+        cardFont: "Arial, Helvetica, sans-serif",
+        nameColor: "#ffffff",
+        roleColor: "#ffffff",
+        nameSize: 42,
+        logoScale: 100,
+        logo: "",
+        background: ""
+      }
+    ];
+
+    let cards = loadCards();
+    let editingId = "";
+    let draftLogo = "";
+    let draftBackground = "";
+
+    const adminView = document.querySelector("#adminView");
+    const publicView = document.querySelector("#publicView");
+    const mainView = document.querySelector("#mainView");
+    const formView = document.querySelector("#formView");
+    const cardList = document.querySelector("#cardList");
+    const builderPreview = document.querySelector("#builderPreview");
+    const status = document.querySelector("#status");
+    const form = document.querySelector("#cardForm");
+    const listTemplate = document.querySelector("#listTemplate");
+    const publicTemplate = document.querySelector("#publicTemplate");
+
+    const fields = {
+      name: document.querySelector("#fullName"),
+      company: document.querySelector("#company"),
+      role: document.querySelector("#role"),
+      phone: document.querySelector("#phone"),
+      email: document.querySelector("#email"),
+      website: document.querySelector("#website"),
+      address: document.querySelector("#address"),
+      accent: document.querySelector("#accent"),
+      buttonTextColor: document.querySelector("#buttonTextColor"),
+      buttonStyle: document.querySelector("#buttonStyle"),
+      buttonRadius: document.querySelector("#buttonRadius"),
+      buttonGap: document.querySelector("#buttonGap"),
+      backgroundOpacity: document.querySelector("#backgroundOpacity"),
+      phoneText: document.querySelector("#phoneText"),
+      emailText: document.querySelector("#emailText"),
+      websiteText: document.querySelector("#websiteText"),
+      saveText: document.querySelector("#saveText"),
+      cardFont: document.querySelector("#cardFont"),
+      nameColor: document.querySelector("#nameColor"),
+      roleColor: document.querySelector("#roleColor"),
+      nameSize: document.querySelector("#nameSize"),
+      logoScale: document.querySelector("#logoScale"),
+      logoUpload: document.querySelector("#logoUpload"),
+      backgroundUpload: document.querySelector("#backgroundUpload")
+    };
+    const logoScaleValue = document.querySelector("#logoScaleValue");
+    const nameSizeValue = document.querySelector("#nameSizeValue");
+    const buttonRadiusValue = document.querySelector("#buttonRadiusValue");
+    const buttonGapValue = document.querySelector("#buttonGapValue");
+    const backgroundOpacityValue = document.querySelector("#backgroundOpacityValue");
+
+    function loadCards() {
+      const saved = localStorage.getItem(storageKey);
+      if (!saved) return seedCards;
+
+      try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) && parsed.length ? parsed : seedCards;
+      } catch {
+        return seedCards;
+      }
+    }
+
+    function saveCards() {
+      localStorage.setItem(storageKey, JSON.stringify(cards));
+    }
+
+    function slugify(value) {
+      const slug = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      return slug || `card-${Date.now()}`;
+    }
+
+    function uniqueId(name, currentId) {
+      const base = slugify(name);
+      let id = base;
+      let counter = 2;
+      while (cards.some((card) => card.id === id && card.id !== currentId)) {
+        id = `${base}-${counter}`;
+        counter += 1;
+      }
+      return id;
+    }
+
+    function initials(value) {
+      return value.trim().split(/\s+/).slice(0, 2).map((word) => word[0] || "").join("").toUpperCase() || "ID";
+    }
+
+    function cleanPhone(value) {
+      return value.replace(/[^\d+]/g, "");
+    }
+
+    function websiteUrl(value) {
+      const trimmed = value.trim();
+      if (!trimmed) return "#";
+      return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    }
+
+    function cardUrl(card) {
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
+      url.searchParams.set("card", card.id);
+      return url.toString();
+    }
+
+    function qrUrl(card) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(cardUrl(card))}`;
+    }
+
+    function readFileAsDataUrl(input, callback) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => callback(reader.result));
+      reader.readAsDataURL(file);
+    }
+
+    function draftCard() {
+      return {
+        id: editingId || "preview",
+        name: fields.name.value.trim() || "Your Name",
+        company: fields.company.value.trim() || "Company Name",
+        role: fields.role.value.trim() || "Title",
+        phone: fields.phone.value.trim(),
+        email: fields.email.value.trim(),
+        website: fields.website.value.trim(),
+        address: fields.address.value.trim(),
+        accent: fields.accent.value,
+        buttonTextColor: fields.buttonTextColor.value,
+        buttonStyle: fields.buttonStyle.value,
+        buttonRadius: Number(fields.buttonRadius.value),
+        buttonGap: Number(fields.buttonGap.value),
+        backgroundOpacity: Number(fields.backgroundOpacity.value),
+        phoneText: fields.phoneText.value.trim() || "Phone",
+        emailText: fields.emailText.value.trim() || "Email",
+        websiteText: fields.websiteText.value.trim() || "Website",
+        saveText: fields.saveText.value.trim() || "Save Contact",
+        cardFont: fields.cardFont.value,
+        nameColor: fields.nameColor.value,
+        roleColor: fields.roleColor.value,
+        nameSize: Number(fields.nameSize.value),
+        logoScale: Number(fields.logoScale.value),
+        logo: draftLogo,
+        background: draftBackground
+      };
+    }
+
+    function renderCardInto(card, container, options = {}) {
+      container.innerHTML = "";
+      const node = publicTemplate.content.cloneNode(true);
+      const cardNode = node.querySelector(".digital-card");
+      const logo = node.querySelector("[data-logo]");
+
+      cardNode.style.setProperty("--accent", card.accent || "#ee5b2a");
+      cardNode.style.setProperty("--button-color", card.accent || "#ee5b2a");
+      cardNode.style.setProperty("--button-text-color", card.buttonTextColor || "#ffffff");
+      cardNode.style.setProperty("--button-radius", `${card.buttonRadius ?? 10}px`);
+      cardNode.style.setProperty("--button-gap", `${card.buttonGap ?? 13}px`);
+      const backgroundOpacity = Number(card.backgroundOpacity ?? 100) / 100;
+      cardNode.style.setProperty("--bg-image-opacity", String(backgroundOpacity));
+      cardNode.style.setProperty("--card-font", card.cardFont || "Arial, Helvetica, sans-serif");
+      cardNode.style.setProperty("--name-color", card.nameColor || "#ffffff");
+      cardNode.style.setProperty("--role-color", card.roleColor || "#ffffff");
+      cardNode.style.setProperty("--name-size", `${card.nameSize || 42}px`);
+      cardNode.dataset.buttonStyle = card.buttonStyle || "premium";
+
+      if (card.background) {
+        cardNode.style.setProperty("--card-bg", `url("${card.background}")`);
+      }
+
+      if (card.logo) {
+        logo.classList.remove("initials");
+        logo.classList.add("has-image");
+        logo.style.background = "transparent";
+        logo.style.setProperty("--logo-scale", String((card.logoScale || 100) / 100));
+        logo.innerHTML = `<img src="${card.logo}" alt="">`;
+      } else {
+        logo.classList.remove("has-image");
+        logo.classList.add("initials");
+        logo.style.removeProperty("--logo-scale");
+        logo.textContent = initials(card.company || card.name);
+        logo.style.background = card.accent;
+      }
+
+      node.querySelector("[data-name]").textContent = card.name;
+      node.querySelector("[data-role]").textContent = card.role;
+      node.querySelector("[data-phone] span").textContent = card.phoneText || "Phone";
+      node.querySelector("[data-email] span").textContent = card.emailText || "Email";
+      node.querySelector("[data-website] span").textContent = card.websiteText || "Website";
+      node.querySelector("[data-save] span").textContent = card.saveText || "Save Contact";
+      node.querySelector("[data-phone]").href = `tel:${cleanPhone(card.phone)}`;
+      node.querySelector("[data-email]").href = `mailto:${card.email}`;
+      node.querySelector("[data-website]").href = websiteUrl(card.website);
+
+      if (options.previewOnly) {
+        node.querySelectorAll("a, button").forEach((control) => {
+          control.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          });
+        });
+      } else {
+        node.querySelector("[data-save]").addEventListener("click", () => downloadContact(card));
+      }
+
+      container.appendChild(node);
+    }
+
+    function renderBuilderPreview() {
+      renderCardInto(draftCard(), builderPreview, { previewOnly: true });
+    }
+
+    function showMain() {
+      formView.classList.add("hidden");
+      mainView.classList.remove("hidden");
+      editingId = "";
+      renderList();
+    }
+
+    function showForm(card) {
+      editingId = card ? card.id : "";
+      draftLogo = card ? card.logo : "";
+      draftBackground = card ? card.background : "";
+      document.querySelector("#formTitle").textContent = card ? "Edit Card" : "Create Card";
+
+      fields.name.value = card ? card.name : "";
+      fields.company.value = card ? card.company : "";
+      fields.role.value = card ? card.role : "";
+      fields.phone.value = card ? card.phone : "";
+      fields.email.value = card ? card.email : "";
+      fields.website.value = card ? card.website : "";
+      fields.address.value = card ? card.address : "";
+      fields.accent.value = card ? card.accent : "#ee5b2a";
+      fields.buttonTextColor.value = card ? card.buttonTextColor || "#ffffff" : "#ffffff";
+      fields.buttonStyle.value = card ? card.buttonStyle || "premium" : "premium";
+      fields.buttonRadius.value = card ? card.buttonRadius ?? 10 : 10;
+      fields.buttonGap.value = card ? card.buttonGap ?? 13 : 13;
+      fields.backgroundOpacity.value = card ? card.backgroundOpacity ?? 100 : 100;
+      fields.phoneText.value = card ? card.phoneText || "Phone" : "Phone";
+      fields.emailText.value = card ? card.emailText || "Email" : "Email";
+      fields.websiteText.value = card ? card.websiteText || "Website" : "Website";
+      fields.saveText.value = card ? card.saveText || "Save Contact" : "Save Contact";
+      fields.cardFont.value = card ? card.cardFont || "Arial, Helvetica, sans-serif" : "Arial, Helvetica, sans-serif";
+      fields.nameColor.value = card ? card.nameColor || "#ffffff" : "#ffffff";
+      fields.roleColor.value = card ? card.roleColor || "#ffffff" : "#ffffff";
+      fields.nameSize.value = card ? card.nameSize || 42 : 42;
+      nameSizeValue.textContent = `${fields.nameSize.value}px`;
+      buttonRadiusValue.textContent = `${fields.buttonRadius.value}px`;
+      buttonGapValue.textContent = `${fields.buttonGap.value}px`;
+      backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
+      fields.logoScale.value = card ? card.logoScale || 100 : 100;
+      logoScaleValue.textContent = `${fields.logoScale.value}%`;
+      fields.logoUpload.value = "";
+      fields.backgroundUpload.value = "";
+      status.textContent = "";
+
+      mainView.classList.add("hidden");
+      formView.classList.remove("hidden");
+      renderBuilderPreview();
+      fields.name.focus();
+    }
+
+    function renderList() {
+      cardList.innerHTML = "";
+
+      if (!cards.length) {
+        cardList.innerHTML = '<div class="empty">No cards yet. Create a card to begin.</div>';
+        return;
+      }
+
+      cards.forEach((card) => {
+        const node = listTemplate.content.cloneNode(true);
+        const avatar = node.querySelector("[data-avatar]");
+        const url = cardUrl(card);
+
+        if (card.logo) {
+          avatar.innerHTML = `<img src="${card.logo}" alt="">`;
+        } else {
+          avatar.textContent = initials(card.name);
+          avatar.style.background = card.accent;
+        }
+
+        node.querySelector("[data-name]").textContent = card.name;
+        node.querySelector("[data-role]").textContent = `${card.role || "Digital Card"}${card.company ? " - " + card.company : ""}`;
+        node.querySelector("[data-qr]").src = qrUrl(card);
+        node.querySelector("[data-url]").value = url;
+        node.querySelector("[data-open]").href = url;
+        node.querySelector("[data-edit]").addEventListener("click", () => showForm(card));
+        node.querySelector("[data-copy]").addEventListener("click", async () => {
+          await navigator.clipboard.writeText(url);
+          status.textContent = "Card link copied.";
+        });
+        node.querySelector("[data-delete]").addEventListener("click", () => {
+          const confirmed = window.confirm(`Delete ${card.name}'s card?`);
+          if (!confirmed) return;
+
+          cards = cards.filter((item) => item.id !== card.id);
+          saveCards();
+          renderList();
+        });
+
+        cardList.appendChild(node);
+      });
+    }
+
+    function downloadContact(card) {
+      const vcard = [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `FN:${card.name}`,
+        `ORG:${card.company}`,
+        `TITLE:${card.role}`,
+        `TEL;TYPE=CELL:${card.phone}`,
+        `EMAIL:${card.email}`,
+        `URL:${websiteUrl(card.website)}`,
+        `ADR;TYPE=WORK:;;${String(card.address || "").replace(/\n/g, "\\n")}`,
+        "END:VCARD"
+      ].join("\n");
+
+      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${card.name || "contact"}.vcf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderPublic(card) {
+      adminView.classList.add("hidden");
+      publicView.classList.remove("hidden");
+
+      if (!card) {
+        publicView.innerHTML = "";
+        publicView.innerHTML = '<div class="empty">Card not found.</div>';
+        return;
+      }
+
+      document.title = `${card.name} Digital Card`;
+      renderCardInto(card, publicView);
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const card = {
+        id: uniqueId(fields.name.value, editingId),
+        name: fields.name.value.trim(),
+        company: fields.company.value.trim(),
+        role: fields.role.value.trim(),
+        phone: fields.phone.value.trim(),
+        email: fields.email.value.trim(),
+        website: fields.website.value.trim(),
+        address: fields.address.value.trim(),
+        accent: fields.accent.value,
+        buttonTextColor: fields.buttonTextColor.value,
+        buttonStyle: fields.buttonStyle.value,
+        buttonRadius: Number(fields.buttonRadius.value),
+        buttonGap: Number(fields.buttonGap.value),
+        backgroundOpacity: Number(fields.backgroundOpacity.value),
+        phoneText: fields.phoneText.value.trim() || "Phone",
+        emailText: fields.emailText.value.trim() || "Email",
+        websiteText: fields.websiteText.value.trim() || "Website",
+        saveText: fields.saveText.value.trim() || "Save Contact",
+        cardFont: fields.cardFont.value,
+        nameColor: fields.nameColor.value,
+        roleColor: fields.roleColor.value,
+        nameSize: Number(fields.nameSize.value),
+        logoScale: Number(fields.logoScale.value),
+        logo: draftLogo,
+        background: draftBackground
+      };
+
+      if (editingId) {
+        cards = cards.map((item) => item.id === editingId ? card : item);
+      } else {
+        cards = [card, ...cards];
+      }
+
+      saveCards();
+      status.textContent = "Card saved.";
+      showMain();
+    });
+
+    fields.logoUpload.addEventListener("change", () => {
+      readFileAsDataUrl(fields.logoUpload, (url) => {
+        draftLogo = url;
+        status.textContent = "Logo attached.";
+        renderBuilderPreview();
+      });
+    });
+
+    fields.backgroundUpload.addEventListener("change", () => {
+      readFileAsDataUrl(fields.backgroundUpload, (url) => {
+        draftBackground = url;
+        status.textContent = "Background attached.";
+        renderBuilderPreview();
+      });
+    });
+
+    Object.entries(fields).forEach(([key, field]) => {
+      if (key === "logoUpload" || key === "backgroundUpload") return;
+      field.addEventListener("input", renderBuilderPreview);
+      field.addEventListener("change", renderBuilderPreview);
+    });
+
+    fields.logoScale.addEventListener("input", () => {
+      logoScaleValue.textContent = `${fields.logoScale.value}%`;
+    });
+
+    fields.nameSize.addEventListener("input", () => {
+      nameSizeValue.textContent = `${fields.nameSize.value}px`;
+    });
+
+    fields.buttonRadius.addEventListener("input", () => {
+      buttonRadiusValue.textContent = `${fields.buttonRadius.value}px`;
+    });
+
+    fields.buttonGap.addEventListener("input", () => {
+      buttonGapValue.textContent = `${fields.buttonGap.value}px`;
+    });
+
+    fields.backgroundOpacity.addEventListener("input", () => {
+      backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
+    });
+
+    document.querySelector("#createBtn").addEventListener("click", () => showForm());
+    document.querySelector("#backBtn").addEventListener("click", showMain);
+    document.querySelector("#clearImagesBtn").addEventListener("click", () => {
+      draftLogo = "";
+      draftBackground = "";
+      fields.logoUpload.value = "";
+      fields.backgroundUpload.value = "";
+      status.textContent = "Images cleared.";
+      renderBuilderPreview();
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const publicCardId = params.get("card");
+
+    if (publicCardId) {
+      renderPublic(cards.find((card) => card.id === publicCardId));
+    } else {
+      renderList();
+    }
+  </script>
+</body>
+</html>
