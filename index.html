@@ -430,14 +430,14 @@
     }
 
     .public-wrap .card-head {
-      min-height: 52vh;
+      min-height: 0;
       align-content: center;
       padding: 72px 26px 34px;
     }
 
     .public-wrap .contact-actions {
       width: min(420px, calc(100% - 32px));
-      margin: auto auto 34px;
+      margin: 0 auto 34px;
       padding: 0;
     }
 
@@ -578,7 +578,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: var(--button-gap, 13px);
-      margin-top: auto;
+      margin-top: var(--title-button-space, 30px);
       padding: 0 28px var(--button-bottom-space, 32px);
     }
 
@@ -922,8 +922,20 @@
                 <input id="backgroundUrl" inputmode="url" placeholder="https://example.com/background.jpg">
               </div>
               <div class="field">
-                <label for="backgroundSlides">Background slideshow URLs</label>
-                <textarea id="backgroundSlides" maxlength="1200" placeholder="One image URL per line"></textarea>
+                <label for="backgroundSlide1">Slideshow image 1</label>
+                <input id="backgroundSlide1" inputmode="url" placeholder="assets/slide1.jpg">
+              </div>
+              <div class="field">
+                <label for="backgroundSlide2">Slideshow image 2</label>
+                <input id="backgroundSlide2" inputmode="url" placeholder="assets/slide2.jpg">
+              </div>
+              <div class="field">
+                <label for="backgroundSlide3">Slideshow image 3</label>
+                <input id="backgroundSlide3" inputmode="url" placeholder="assets/slide3.jpg">
+              </div>
+              <div class="field">
+                <label for="backgroundSlide4">Slideshow image 4</label>
+                <input id="backgroundSlide4" inputmode="url" placeholder="assets/slide4.jpg">
               </div>
             </div>
           </div>
@@ -1191,7 +1203,10 @@
       buttonBottomSpace: document.querySelector("#buttonBottomSpace"),
       logoUrl: document.querySelector("#logoUrl"),
       backgroundUrl: document.querySelector("#backgroundUrl"),
-      backgroundSlides: document.querySelector("#backgroundSlides"),
+      backgroundSlide1: document.querySelector("#backgroundSlide1"),
+      backgroundSlide2: document.querySelector("#backgroundSlide2"),
+      backgroundSlide3: document.querySelector("#backgroundSlide3"),
+      backgroundSlide4: document.querySelector("#backgroundSlide4"),
       logoUpload: document.querySelector("#logoUpload"),
       backgroundUpload: document.querySelector("#backgroundUpload")
     };
@@ -1451,6 +1466,23 @@
       return first ? [first, ...slides.filter((url) => url !== first)] : slides;
     }
 
+    function slideshowValue() {
+      return [
+        fields.backgroundSlide1.value,
+        fields.backgroundSlide2.value,
+        fields.backgroundSlide3.value,
+        fields.backgroundSlide4.value
+      ].map((url) => url.trim()).filter(Boolean).join("\n");
+    }
+
+    function setSlideshowFields(value) {
+      const slides = String(value || "").split(/\r?\n/).map((url) => url.trim()).filter(Boolean);
+      fields.backgroundSlide1.value = slides[0] || "";
+      fields.backgroundSlide2.value = slides[1] || "";
+      fields.backgroundSlide3.value = slides[2] || "";
+      fields.backgroundSlide4.value = slides[3] || "";
+    }
+
     function setCardBackground(cardNode, source) {
       if (source) {
         cardNode.style.setProperty("--card-bg", `url("${source}")`);
@@ -1496,7 +1528,7 @@
         buttonBottomSpace: Number(fields.buttonBottomSpace.value),
         logoUrl: fields.logoUrl.value.trim(),
         backgroundUrl: fields.backgroundUrl.value.trim(),
-        backgroundSlides: fields.backgroundSlides.value.trim(),
+        backgroundSlides: slideshowValue(),
         logo: draftLogo,
         background: draftBackground
       };
@@ -1646,7 +1678,7 @@
       buttonBottomSpaceValue.textContent = `${fields.buttonBottomSpace.value}px`;
       fields.logoUrl.value = card ? card.logoUrl || "" : "";
       fields.backgroundUrl.value = card ? card.backgroundUrl || "" : "";
-      fields.backgroundSlides.value = card ? card.backgroundSlides || "" : "";
+      setSlideshowFields(card ? card.backgroundSlides || "" : "");
       fields.logoUpload.value = "";
       fields.backgroundUpload.value = "";
       status.textContent = "";
@@ -1781,7 +1813,7 @@
         buttonBottomSpace: Number(fields.buttonBottomSpace.value),
         logoUrl: fields.logoUrl.value.trim(),
         backgroundUrl: fields.backgroundUrl.value.trim(),
-        backgroundSlides: fields.backgroundSlides.value.trim(),
+        backgroundSlides: slideshowValue(),
         logo: draftLogo,
         background: draftBackground
       };
@@ -1880,7 +1912,7 @@
       fields.backgroundUpload.value = "";
       fields.logoUrl.value = "";
       fields.backgroundUrl.value = "";
-      fields.backgroundSlides.value = "";
+      setSlideshowFields("");
       status.textContent = "Images cleared.";
       renderBuilderPreview();
     });
@@ -1888,7 +1920,7 @@
     document.querySelector("#useGithubImagesBtn").addEventListener("click", () => {
       fields.logoUrl.value = githubLogoUrl;
       fields.backgroundUrl.value = githubBackgroundUrl;
-      fields.backgroundSlides.value = "";
+      setSlideshowFields("");
       status.textContent = "GitHub image URLs added.";
       renderBuilderPreview();
     });
