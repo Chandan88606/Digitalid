@@ -318,6 +318,13 @@
       font-weight: 900;
     }
 
+    .helper-text {
+      margin: -4px 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -762,6 +769,10 @@
 
           <div class="editor-group">
             <div class="editor-group-title">Style, Logo & Background</div>
+            <p class="helper-text">For QR scans on other phones, use hosted image URLs. Local uploads only work in this browser.</p>
+            <div class="form-actions">
+              <button class="btn ghost" id="useGithubImagesBtn" type="button">Use GitHub Images</button>
+            </div>
             <div class="form-grid">
               <div class="field">
                 <label for="accent">Button color</label>
@@ -896,6 +907,8 @@
 
   <script>
     const storageKey = "digitalCards.v2";
+    const githubLogoUrl = "https://raw.githubusercontent.com/Chandan88606/Digitalid/main/assets/logo.png";
+    const githubBackgroundUrl = "https://raw.githubusercontent.com/Chandan88606/Digitalid/main/assets/background.jpeg";
     const seedCards = [
       {
         id: "chirag-bansal",
@@ -1476,6 +1489,13 @@
       fields.logoUrl.value = "";
       fields.backgroundUrl.value = "";
       status.textContent = "Images cleared.";
+      renderBuilderPreview();
+    });
+
+    document.querySelector("#useGithubImagesBtn").addEventListener("click", () => {
+      fields.logoUrl.value = githubLogoUrl;
+      fields.backgroundUrl.value = githubBackgroundUrl;
+      status.textContent = "GitHub image URLs added.";
       renderBuilderPreview();
     });
 
