@@ -851,7 +851,7 @@
       <div class="link-box">
         <img class="qr" data-qr alt="QR code">
         <input class="share-url" data-url readonly>
-        <p class="share-note">QR shares details, design, and hosted image URLs. Local uploads show only on this browser.</p>
+        <p class="share-note">Share URL includes images. Very large images can make QR generation unreliable.</p>
       </div>
       <div class="card-actions">
         <a class="btn" data-open target="_blank" rel="noopener">Open Card</a>
@@ -1084,9 +1084,7 @@
 
     function shareableCard(card) {
       return {
-        ...card,
-        logo: "",
-        background: ""
+        ...card
       };
     }
 
