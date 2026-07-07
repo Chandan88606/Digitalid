@@ -1006,11 +1006,40 @@
       return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
     }
 
+    function encodeSharedCard(card) {
+      const json = JSON.stringify(card);
+      const bytes = new TextEncoder().encode(json);
+      let binary = "";
+
+      for (let index = 0; index < bytes.length; index += 0x8000) {
+        binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+      }
+
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    function decodeSharedCard(value) {
+      try {
+        const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+        const binary = atob(padded);
+        const bytes = new Uint8Array(binary.length);
+
+        for (let index = 0; index < binary.length; index += 1) {
+          bytes[index] = binary.charCodeAt(index);
+        }
+
+        return JSON.parse(new TextDecoder().decode(bytes));
+      } catch {
+        return null;
+      }
+    }
+
     function cardUrl(card) {
       const url = new URL(window.location.href);
       url.search = "";
       url.hash = "";
-      url.searchParams.set("card", card.id);
+      url.searchParams.set("share", encodeSharedCard(card));
       return url.toString();
     }
 
@@ -1018,12 +1047,38 @@
       return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(cardUrl(card))}`;
     }
 
-    function readFileAsDataUrl(input, callback) {
+    function resizeImageDataUrl(dataUrl, options, callback) {
+      const image = new Image();
+      image.addEventListener("load", () => {
+        const maxSize = options.maxSize || 900;
+        const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const width = Math.max(1, Math.round(image.width * ratio));
+        const height = Math.max(1, Math.round(image.height * ratio));
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(image, 0, 0, width, height);
+        callback(canvas.toDataURL(options.type || "image/jpeg", options.quality || 0.82));
+      });
+      image.addEventListener("error", () => callback(dataUrl));
+      image.src = dataUrl;
+    }
+
+    function readFileAsDataUrl(input, callback, options = {}) {
       const file = input.files && input.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
+      reader.addEventListener("load", () => {
+        if (!options.resize) {
+          callback(reader.result);
+          return;
+        }
+
+        resizeImageDataUrl(reader.result, options, callback);
+      });
       reader.readAsDataURL(file);
     }
 
@@ -1301,7 +1356,7 @@
         draftLogo = url;
         status.textContent = "Logo attached.";
         renderBuilderPreview();
-      });
+      }, { resize: true, maxSize: 520, type: "image/png" });
     });
 
     fields.backgroundUpload.addEventListener("change", () => {
@@ -1309,7 +1364,7 @@
         draftBackground = url;
         status.textContent = "Background attached.";
         renderBuilderPreview();
-      });
+      }, { resize: true, maxSize: 900, type: "image/jpeg", quality: 0.78 });
     });
 
     Object.entries(fields).forEach(([key, field]) => {
@@ -1350,9 +1405,12 @@
     });
 
     const params = new URLSearchParams(window.location.search);
+    const sharedCard = params.get("share") ? decodeSharedCard(params.get("share")) : null;
     const publicCardId = params.get("card");
 
-    if (publicCardId) {
+    if (sharedCard) {
+      renderPublic(sharedCard);
+    } else if (publicCardId) {
       renderPublic(cards.find((card) => card.id === publicCardId));
     } else {
       renderList();
