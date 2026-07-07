@@ -201,6 +201,13 @@
       font-size: 13px;
     }
 
+    .share-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
     .qr {
       width: 142px;
       height: 142px;
@@ -811,6 +818,7 @@
       <div class="link-box">
         <img class="qr" data-qr alt="QR code">
         <input class="share-url" data-url readonly>
+        <p class="share-note">QR shares card details and design. Uploaded images need hosting to appear on other phones.</p>
       </div>
       <div class="card-actions">
         <a class="btn" data-open target="_blank" rel="noopener">Open Card</a>
@@ -1035,11 +1043,19 @@
       }
     }
 
+    function shareableCard(card) {
+      return {
+        ...card,
+        logo: "",
+        background: ""
+      };
+    }
+
     function cardUrl(card) {
       const url = new URL(window.location.href);
       url.search = "";
       url.hash = "";
-      url.searchParams.set("share", encodeSharedCard(card));
+      url.searchParams.set("share", encodeSharedCard(shareableCard(card)));
       return url.toString();
     }
 
