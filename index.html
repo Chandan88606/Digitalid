@@ -806,6 +806,10 @@
                 <input id="logoUpload" type="file" accept="image/*">
               </div>
               <div class="field">
+                <label for="logoUrl">Hosted logo URL</label>
+                <input id="logoUrl" inputmode="url" placeholder="https://example.com/logo.png">
+              </div>
+              <div class="field">
                 <label for="logoScale">Logo scale</label>
                 <div class="range-line">
                   <input id="logoScale" type="range" min="60" max="180" value="100">
@@ -815,6 +819,10 @@
               <div class="field">
                 <label for="backgroundUpload">Background image</label>
                 <input id="backgroundUpload" type="file" accept="image/*">
+              </div>
+              <div class="field">
+                <label for="backgroundUrl">Hosted background URL</label>
+                <input id="backgroundUrl" inputmode="url" placeholder="https://example.com/background.jpg">
               </div>
             </div>
           </div>
@@ -843,7 +851,7 @@
       <div class="link-box">
         <img class="qr" data-qr alt="QR code">
         <input class="share-url" data-url readonly>
-        <p class="share-note">QR shares card details and design. Uploaded images need hosting to appear on other phones.</p>
+        <p class="share-note">QR shares details, design, and hosted image URLs. Local uploads show only on this browser.</p>
       </div>
       <div class="card-actions">
         <a class="btn" data-open target="_blank" rel="noopener">Open Card</a>
@@ -913,6 +921,8 @@
         roleColor: "#ffffff",
         nameSize: 42,
         logoScale: 100,
+        logoUrl: "",
+        backgroundUrl: "",
         logo: "",
         background: ""
       },
@@ -940,6 +950,8 @@
         roleColor: "#ffffff",
         nameSize: 42,
         logoScale: 100,
+        logoUrl: "",
+        backgroundUrl: "",
         logo: "",
         background: ""
       }
@@ -984,6 +996,8 @@
       roleColor: document.querySelector("#roleColor"),
       nameSize: document.querySelector("#nameSize"),
       logoScale: document.querySelector("#logoScale"),
+      logoUrl: document.querySelector("#logoUrl"),
+      backgroundUrl: document.querySelector("#backgroundUrl"),
       logoUpload: document.querySelector("#logoUpload"),
       backgroundUpload: document.querySelector("#backgroundUpload")
     };
@@ -1156,6 +1170,8 @@
         roleColor: fields.roleColor.value,
         nameSize: Number(fields.nameSize.value),
         logoScale: Number(fields.logoScale.value),
+        logoUrl: fields.logoUrl.value.trim(),
+        backgroundUrl: fields.backgroundUrl.value.trim(),
         logo: draftLogo,
         background: draftBackground
       };
@@ -1180,16 +1196,19 @@
       cardNode.style.setProperty("--name-size", `${card.nameSize || 42}px`);
       cardNode.dataset.buttonStyle = card.buttonStyle || "premium";
 
-      if (card.background) {
-        cardNode.style.setProperty("--card-bg", `url("${card.background}")`);
+      const backgroundSource = card.backgroundUrl || card.background;
+      const logoSource = card.logoUrl || card.logo;
+
+      if (backgroundSource) {
+        cardNode.style.setProperty("--card-bg", `url("${backgroundSource}")`);
       }
 
-      if (card.logo) {
+      if (logoSource) {
         logo.classList.remove("initials");
         logo.classList.add("has-image");
         logo.style.background = "transparent";
         logo.style.setProperty("--logo-scale", String((card.logoScale || 100) / 100));
-        logo.innerHTML = `<img src="${card.logo}" alt="">`;
+        logo.innerHTML = `<img src="${logoSource}" alt="">`;
       } else {
         logo.classList.remove("has-image");
         logo.classList.add("initials");
@@ -1266,6 +1285,8 @@
       backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
       fields.logoScale.value = card ? card.logoScale || 100 : 100;
       logoScaleValue.textContent = `${fields.logoScale.value}%`;
+      fields.logoUrl.value = card ? card.logoUrl || "" : "";
+      fields.backgroundUrl.value = card ? card.backgroundUrl || "" : "";
       fields.logoUpload.value = "";
       fields.backgroundUpload.value = "";
       status.textContent = "";
@@ -1290,8 +1311,10 @@
         const url = cardUrl(card);
         const openUrl = localCardUrl(card);
 
-        if (card.logo) {
-          avatar.innerHTML = `<img src="${card.logo}" alt="">`;
+        const avatarSource = card.logoUrl || card.logo;
+
+        if (avatarSource) {
+          avatar.innerHTML = `<img src="${avatarSource}" alt="">`;
         } else {
           avatar.textContent = initials(card.name);
           avatar.style.background = card.accent;
@@ -1386,6 +1409,8 @@
         roleColor: fields.roleColor.value,
         nameSize: Number(fields.nameSize.value),
         logoScale: Number(fields.logoScale.value),
+        logoUrl: fields.logoUrl.value.trim(),
+        backgroundUrl: fields.backgroundUrl.value.trim(),
         logo: draftLogo,
         background: draftBackground
       };
@@ -1450,6 +1475,8 @@
       draftBackground = "";
       fields.logoUpload.value = "";
       fields.backgroundUpload.value = "";
+      fields.logoUrl.value = "";
+      fields.backgroundUrl.value = "";
       status.textContent = "Images cleared.";
       renderBuilderPreview();
     });
