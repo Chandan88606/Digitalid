@@ -503,6 +503,17 @@
       filter: var(--logo-filter, brightness(0) invert(1));
     }
 
+    .logo-symbol {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--logo-color, #ffffff);
+      transform: scale(var(--logo-scale, 1));
+      transform-origin: center;
+      -webkit-mask: var(--logo-image) center / contain no-repeat;
+      mask: var(--logo-image) center / contain no-repeat;
+    }
+
     .logo.initials {
       border: 3px solid rgba(255, 255, 255, 0.82);
       border-radius: 50%;
@@ -902,6 +913,10 @@
                 </div>
               </div>
               <div class="field">
+                <label for="logoColor">Logo color</label>
+                <input id="logoColor" type="color" value="#ffffff">
+              </div>
+              <div class="field">
                 <label for="backgroundUpload">Background image</label>
                 <input id="backgroundUpload" type="file" accept="image/*">
               </div>
@@ -1083,6 +1098,7 @@
         nameSize: 42,
         roleSize: 16,
         logoScale: 135,
+        logoColor: "#ffffff",
         buttonSize: 70,
         separatorText: "",
         separatorColor: "#ee5b2a",
@@ -1123,6 +1139,7 @@
         nameSize: 42,
         roleSize: 16,
         logoScale: 135,
+        logoColor: "#ffffff",
         buttonSize: 70,
         separatorText: "",
         separatorColor: "#ee5b2a",
@@ -1180,6 +1197,7 @@
       nameSize: document.querySelector("#nameSize"),
       roleSize: document.querySelector("#roleSize"),
       logoScale: document.querySelector("#logoScale"),
+      logoColor: document.querySelector("#logoColor"),
       buttonSize: document.querySelector("#buttonSize"),
       separatorText: document.querySelector("#separatorText"),
       separatorColor: document.querySelector("#separatorColor"),
@@ -1288,6 +1306,7 @@
       put("ns", card.nameSize, 42);
       put("rs", card.roleSize, 16);
       put("ls", card.logoScale, 135);
+      put("lc", card.logoColor, "#ffffff");
       put("bz", card.buttonSize, 70);
       put("sx", card.separatorText);
       put("sc", card.separatorColor, "#ee5b2a");
@@ -1332,6 +1351,7 @@
         nameSize: value.ns || 42,
         roleSize: value.rs || 16,
         logoScale: value.ls || 135,
+        logoColor: value.lc || "#ffffff",
         buttonSize: value.bz || 70,
         separatorText: value.sx || "",
         separatorColor: value.sc || "#ee5b2a",
@@ -1478,10 +1498,14 @@
 
     function setCardBackground(cardNode, source) {
       if (source) {
-        cardNode.style.setProperty("--card-bg", `url("${source}")`);
+        cardNode.style.setProperty("--card-bg", `url("${cssUrl(source)}")`);
       } else {
         cardNode.style.removeProperty("--card-bg");
       }
+    }
+
+    function cssUrl(source) {
+      return String(source).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
     }
 
     function draftCard() {
@@ -1510,6 +1534,7 @@
         nameSize: Number(fields.nameSize.value),
         roleSize: Number(fields.roleSize.value),
         logoScale: Number(fields.logoScale.value),
+        logoColor: fields.logoColor.value,
         buttonSize: Number(fields.buttonSize.value),
         separatorText: fields.separatorText.value.trim(),
         separatorColor: fields.separatorColor.value,
@@ -1557,6 +1582,7 @@
 
       const backgrounds = backgroundList(card);
       const logoSource = card.logoUrl || card.logo;
+      const logoColor = card.logoColor || "#ffffff";
 
       setCardBackground(cardNode, backgrounds[0]);
 
@@ -1573,11 +1599,17 @@
         logo.classList.add("has-image");
         logo.style.background = "transparent";
         logo.style.setProperty("--logo-scale", String((card.logoScale || 135) / 100));
-        logo.innerHTML = `<img src="${logoSource}" alt="">`;
+        logo.style.setProperty("--logo-color", logoColor);
+        logo.style.setProperty("--logo-image", `url("${cssUrl(logoSource)}")`);
+        logo.innerHTML = '<span class="logo-symbol" aria-hidden="true"></span>';
+        logo.setAttribute("aria-label", `${card.company || card.name} logo`);
       } else {
         logo.classList.remove("has-image");
         logo.classList.add("initials");
         logo.style.removeProperty("--logo-scale");
+        logo.style.removeProperty("--logo-color");
+        logo.style.removeProperty("--logo-image");
+        logo.removeAttribute("aria-label");
         logo.textContent = initials(card.company || card.name);
         logo.style.background = card.accent;
       }
@@ -1655,6 +1687,7 @@
       backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
       fields.logoScale.value = card ? card.logoScale || 135 : 135;
       logoScaleValue.textContent = `${fields.logoScale.value}%`;
+      fields.logoColor.value = card ? card.logoColor || "#ffffff" : "#ffffff";
       fields.separatorText.value = card ? card.separatorText || "" : "";
       fields.separatorColor.value = card ? card.separatorColor || "#ee5b2a" : "#ee5b2a";
       fields.separatorWidth.value = card ? card.separatorWidth || 180 : 180;
@@ -1795,6 +1828,7 @@
         nameSize: Number(fields.nameSize.value),
         roleSize: Number(fields.roleSize.value),
         logoScale: Number(fields.logoScale.value),
+        logoColor: fields.logoColor.value,
         buttonSize: Number(fields.buttonSize.value),
         separatorText: fields.separatorText.value.trim(),
         separatorColor: fields.separatorColor.value,
