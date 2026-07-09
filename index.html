@@ -480,8 +480,8 @@
     }
 
     .logo {
-      width: 104px;
-      height: 104px;
+      width: 148px;
+      height: 148px;
       color: var(--accent);
       background: transparent;
       font-size: 32px;
@@ -500,6 +500,7 @@
       object-fit: contain;
       transform: scale(var(--logo-scale, 1));
       transform-origin: center;
+      filter: var(--logo-filter, brightness(0) invert(1));
     }
 
     .logo.initials {
@@ -513,7 +514,6 @@
     .name {
       position: relative;
       margin-top: var(--logo-name-space, 24px);
-      padding-bottom: 16px;
       color: var(--name-color, #fff);
       font-family: var(--card-font, Arial, Helvetica, sans-serif);
       font-size: var(--name-size, 42px);
@@ -522,19 +522,6 @@
       text-transform: uppercase;
       text-shadow: 0 4px 18px rgba(0, 0, 0, 0.62);
       overflow-wrap: anywhere;
-    }
-
-    .name::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-      width: min(132px, 72%);
-      height: 3px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      background: var(--underline-color, var(--accent));
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.28);
     }
 
     .separator {
@@ -910,8 +897,8 @@
               <div class="field">
                 <label for="logoScale">Logo scale</label>
                 <div class="range-line">
-                  <input id="logoScale" type="range" min="60" max="180" value="100">
-                  <span class="range-value" id="logoScaleValue">100%</span>
+                  <input id="logoScale" type="range" min="60" max="280" value="135">
+                  <span class="range-value" id="logoScaleValue">135%</span>
                 </div>
               </div>
               <div class="field">
@@ -1095,7 +1082,7 @@
         roleColor: "#ffffff",
         nameSize: 42,
         roleSize: 16,
-        logoScale: 100,
+        logoScale: 135,
         buttonSize: 70,
         separatorText: "",
         separatorColor: "#ee5b2a",
@@ -1135,7 +1122,7 @@
         roleColor: "#ffffff",
         nameSize: 42,
         roleSize: 16,
-        logoScale: 100,
+        logoScale: 135,
         buttonSize: 70,
         separatorText: "",
         separatorColor: "#ee5b2a",
@@ -1300,7 +1287,7 @@
       put("rc", card.roleColor, "#ffffff");
       put("ns", card.nameSize, 42);
       put("rs", card.roleSize, 16);
-      put("ls", card.logoScale, 100);
+      put("ls", card.logoScale, 135);
       put("bz", card.buttonSize, 70);
       put("sx", card.separatorText);
       put("sc", card.separatorColor, "#ee5b2a");
@@ -1344,7 +1331,7 @@
         roleColor: value.rc || "#ffffff",
         nameSize: value.ns || 42,
         roleSize: value.rs || 16,
-        logoScale: value.ls || 100,
+        logoScale: value.ls || 135,
         buttonSize: value.bz || 70,
         separatorText: value.sx || "",
         separatorColor: value.sc || "#ee5b2a",
@@ -1585,7 +1572,7 @@
         logo.classList.remove("initials");
         logo.classList.add("has-image");
         logo.style.background = "transparent";
-        logo.style.setProperty("--logo-scale", String((card.logoScale || 100) / 100));
+        logo.style.setProperty("--logo-scale", String((card.logoScale || 135) / 100));
         logo.innerHTML = `<img src="${logoSource}" alt="">`;
       } else {
         logo.classList.remove("has-image");
@@ -1666,7 +1653,7 @@
       fields.buttonSize.value = card ? card.buttonSize || 70 : 70;
       buttonSizeValue.textContent = `${fields.buttonSize.value}px`;
       backgroundOpacityValue.textContent = `${fields.backgroundOpacity.value}%`;
-      fields.logoScale.value = card ? card.logoScale || 100 : 100;
+      fields.logoScale.value = card ? card.logoScale || 135 : 135;
       logoScaleValue.textContent = `${fields.logoScale.value}%`;
       fields.separatorText.value = card ? card.separatorText || "" : "";
       fields.separatorColor.value = card ? card.separatorColor || "#ee5b2a" : "#ee5b2a";
