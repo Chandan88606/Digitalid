@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Digital Card Manager</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
   <style>
     :root {
       --ink: #182229;
@@ -449,7 +452,7 @@
       place-items: center;
       min-height: 100vh;
       padding: 0;
-      background: #101820;
+      background: #0d1322;
     }
 
     .digital-card {
@@ -712,6 +715,115 @@
       white-space: nowrap;
       font-size: 15px;
       letter-spacing: 0;
+    }
+
+    /* Executive luxury vCard (public card view) */
+    .digital-card.exec {
+      font-family: "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08) inset;
+    }
+    .exec-ambient { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .exec-ambient i, .exec-ambient b, .exec-ambient s {
+      position: absolute; display: block; border-radius: 50%; text-decoration: none;
+    }
+    .exec-ambient i { top: -8rem; left: -8rem; width: 20rem; height: 20rem; background: rgba(142, 213, 255, 0.1); filter: blur(100px); }
+    .exec-ambient b { top: 50%; right: -9rem; width: 24rem; height: 24rem; background: rgba(233, 195, 73, 0.05); filter: blur(120px); }
+    .exec-ambient s { bottom: -6rem; left: 2.5rem; width: 18rem; height: 18rem; background: rgba(56, 189, 248, 0.1); filter: blur(90px); }
+    .exec-head { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 28px 24px 24px; }
+    .exec-mono-wrap { position: relative; margin-bottom: 16px; }
+    .exec-mono {
+      width: 104px; height: 104px; border-radius: 50%; padding: 4px;
+      background: linear-gradient(to top right, var(--button-color, #38bdf8), #33394a, rgba(233, 195, 73, 0.3));
+      box-shadow: 0 0 32px rgba(56, 189, 248, 0.22);
+    }
+    .exec-mono-inner {
+      width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+      background: #080e1d; border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #8ed5ff; font-weight: 800; font-size: 26px; letter-spacing: 0.06em;
+    }
+    .exec-mono-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .exec-badge {
+      position: absolute; bottom: 0; right: 0; width: 26px; height: 26px; border-radius: 50%;
+      display: grid; place-items: center; border: 2px solid #0d1322;
+      background: var(--button-color, #38bdf8); color: #00354a; font-weight: 900; font-size: 14px;
+    }
+    .exec-name {
+      margin: var(--logo-name-space, 24px) 0 4px; color: var(--name-color, #fff);
+      font-family: var(--card-font, "Plus Jakarta Sans", Arial, sans-serif);
+      font-size: 22px; line-height: 28px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .exec-role { color: #8ed5ff; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; margin-bottom: 4px; overflow-wrap: anywhere; }
+    .exec-bio { color: #bdc8d1; font-size: 13px; line-height: 20px; max-width: 320px; margin-bottom: 8px; overflow-wrap: anywhere; }
+    .exec-company {
+      width: 100%; background: rgba(36, 42, 58, 0.6); border: 1px solid rgba(62, 72, 79, 0.3);
+      border-radius: 12px; padding: 10px; margin-bottom: 16px; backdrop-filter: blur(8px);
+    }
+    .exec-company p { margin: 0; }
+    .exec-company-name { color: #8ed5ff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px !important; overflow-wrap: anywhere; }
+    .exec-company-tag { color: #bdc8d1; font-size: 11px; line-height: 1.4; margin-bottom: 6px !important; overflow-wrap: anywhere; }
+    .exec-company-loc { color: #87929a; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; overflow-wrap: anywhere; }
+    .exec-divider { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; opacity: 0.8; }
+    .exec-divider i { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(62, 72, 79, 0.6)); }
+    .exec-divider i:last-child { background: linear-gradient(to left, transparent, rgba(62, 72, 79, 0.6)); }
+    .exec-divider u { width: 8px; height: 8px; transform: rotate(45deg); border: 1px solid rgba(233, 195, 73, 0.8); background: rgba(233, 195, 73, 0.2); text-decoration: none; }
+    .exec-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 320px; margin-bottom: 24px; }
+    .exec-actions a, .exec-actions button {
+      display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: 0; padding: 0;
+      color: #dde2f8; text-decoration: none; font: inherit; cursor: pointer;
+    }
+    .exec-circle {
+      width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(36, 42, 58, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #dde2f8;
+      transition: border-color 0.2s ease, transform 0.15s ease;
+    }
+    .exec-actions a:hover .exec-circle, .exec-actions button:hover .exec-circle { border-color: #8ed5ff; }
+    .exec-actions a:active .exec-circle, .exec-actions button:active .exec-circle { transform: scale(0.95); }
+    .exec-circle svg { width: 22px; height: 22px; fill: currentColor; }
+    .exec-actions small { font-size: 10px; font-weight: 500; letter-spacing: 0.04em; color: #bdc8d1; }
+    .exec-save {
+      width: 100%; min-height: 52px; border: 0; border-radius: 999px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: linear-gradient(to right, var(--button-color, #38bdf8), #7bd0ff); color: #00354a;
+      font-weight: 800; font-size: 15px; box-shadow: 0 4px 24px rgba(56, 189, 248, 0.35);
+      transition: transform 0.15s ease;
+    }
+    .exec-save:active { transform: scale(0.98); }
+    .exec-save svg { width: 22px; height: 22px; fill: currentColor; }
+    .exec-rows { position: relative; z-index: 1; display: grid; gap: 8px; padding: 0 24px; margin-top: 16px; }
+    .exec-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: #191f2f; border: 1px solid rgba(62, 72, 79, 0.4); border-radius: 12px; padding: 12px 16px;
+    }
+    .exec-row div { min-width: 0; text-align: left; }
+    .exec-row label { display: block; color: #87929a; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; }
+    .exec-row a { color: #dde2f8; font-size: 14px; font-weight: 500; text-decoration: none; overflow-wrap: anywhere; }
+    .exec-copy {
+      flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      display: grid; place-items: center; border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05); color: #dde2f8;
+    }
+    .exec-copy:hover { border-color: #8ed5ff; }
+    .exec-copy svg { width: 16px; height: 16px; fill: currentColor; }
+    .exec-qrbox {
+      position: relative; z-index: 1; display: flex; gap: 16px; align-items: center; text-align: left;
+      background: #151b2b; border: 1px solid rgba(62, 72, 79, 0.4); border-radius: 16px; padding: 16px; margin: 16px 24px 0;
+    }
+    .exec-qrbox img { width: 88px; height: 88px; border-radius: 8px; background: #fff; padding: 4px; }
+    .exec-qrbox h3 { margin: 0 0 2px; font-size: 14px; }
+    .exec-qrbox p { margin: 0 0 8px; color: #bdc8d1; font-size: 12px; overflow-wrap: anywhere; }
+    .exec-qrbox .row { display: flex; gap: 8px; }
+    .exec-chip {
+      border: 0; border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 800; cursor: pointer;
+      background: rgba(142, 213, 255, 0.15); color: #8ed5ff; text-decoration: none; display: inline-block;
+    }
+    .exec-chip.ghost { background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #dde2f8; }
+    .exec-foot { position: relative; z-index: 1; text-align: center; color: #87929a; font-size: 12px; padding: 20px 24px 32px; }
+    .exec-toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99;
+      display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px;
+      background: #2f3445; border: 1px solid rgba(142, 213, 255, 0.4); color: #dde2f8;
+      font-size: 12px; font-weight: 700; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
     }
 
     .empty {
@@ -1088,35 +1200,58 @@
   </template>
 
   <template id="publicTemplate">
-    <article class="digital-card">
-      <div class="card-head">
-        <div class="logo" data-logo></div>
-        <div class="separator" data-separator></div>
-        <div class="name" data-name></div>
-        <div class="role" data-role></div>
-      </div>
-      <div class="contact-actions">
-        <a class="action" data-phone>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.28-.28.67-.36 1.03-.24 1.14.38 2.36.59 3.56.59.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.2.2 2.42.59 3.56.11.36.03.75-.25 1.03l-2.22 2.2Z"/></svg>
-          <span>Phone</span>
-          <i></i>
-        </a>
-        <a class="action" data-email>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm-.4 4.25-7.07 4.42a1 1 0 0 1-1.06 0L4.4 8.25a1 1 0 1 1 1.06-1.7L12 10.64l6.54-4.09a1 1 0 1 1 1.06 1.7Z"/></svg>
-          <span>Email</span>
-          <i></i>
-        </a>
-        <a class="action" data-website target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.93 9h-3.02a15.3 15.3 0 0 0-1.1-5.05A8.03 8.03 0 0 1 18.93 11ZM12 4.04c.83 1.2 1.55 3.56 1.85 6.96h-3.7c.3-3.4 1.02-5.76 1.85-6.96ZM4.26 13h3.73c.1 1.75.39 3.39.84 4.77A8.03 8.03 0 0 1 4.26 13Zm3.73-2H4.26a8.03 8.03 0 0 1 4.57-4.77A17.3 17.3 0 0 0 7.99 11ZM12 19.96c-.83-1.2-1.55-3.56-1.85-6.96h3.7c-.3 3.4-1.02 5.76-1.85 6.96Zm3.17-2.19c.45-1.38.74-3.02.84-4.77h3.73a8.03 8.03 0 0 1-4.57 4.77Z"/></svg>
-          <span>Website</span>
-          <i></i>
-        </a>
-        <button class="action" data-save type="button">
+    <article class="digital-card exec">
+      <div class="exec-ambient" aria-hidden="true"><i></i><b></b><s></s></div>
+      <div class="exec-head">
+        <div class="exec-mono-wrap">
+          <div class="exec-mono"><div class="exec-mono-inner" data-logo></div></div>
+          <div class="exec-badge" aria-hidden="true">✓</div>
+        </div>
+        <div class="exec-name" data-name></div>
+        <div class="exec-role" data-role></div>
+        <div class="exec-bio" data-bio></div>
+        <div class="exec-company">
+          <p class="exec-company-name" data-company></p>
+          <p class="exec-company-tag" data-tagline></p>
+          <p class="exec-company-loc" data-address-label></p>
+        </div>
+        <div class="exec-divider" aria-hidden="true"><i></i><u></u><i></i></div>
+        <div class="exec-actions">
+          <a data-phone>
+            <span class="exec-circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.28-.28.67-.36 1.03-.24 1.14.38 2.36.59 3.56.59.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.2.2 2.42.59 3.56.11.36.03.75-.25 1.03l-2.22 2.2Z"/></svg></span>
+            <small data-phone-label>Call</small>
+          </a>
+          <a data-email>
+            <span class="exec-circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm-.4 4.25-7.07 4.42a1 1 0 0 1-1.06 0L4.4 8.25a1 1 0 1 1 1.06-1.7L12 10.64l6.54-4.09a1 1 0 1 1 1.06 1.7Z"/></svg></span>
+            <small data-email-label>Email</small>
+          </a>
+          <a data-website target="_blank" rel="noopener">
+            <span class="exec-circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.93 9h-3.02a15.3 15.3 0 0 0-1.1-5.05A8.03 8.03 0 0 1 18.93 11ZM12 4.04c.83 1.2 1.55 3.56 1.85 6.96h-3.7c.3-3.4 1.02-5.76 1.85-6.96ZM4.26 13h3.73c.1 1.75.39 3.39.84 4.77A8.03 8.03 0 0 1 4.26 13Zm3.73-2H4.26a8.03 8.03 0 0 1 4.57-4.77A17.3 17.3 0 0 0 7.99 11ZM12 19.96c-.83-1.2-1.55-3.56-1.85-6.96h3.7c-.3 3.4-1.02 5.76-1.85 6.96Zm3.17-2.19c.45-1.38.74-3.02.84-4.77h3.73a8.03 8.03 0 0 1-4.57 4.77Z"/></svg></span>
+            <small data-website-label>Global</small>
+          </a>
+          <button data-share type="button">
+            <span class="exec-circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5a3 3 0 1 0-2.83-4H13a3 3 0 0 0 0 6h.17A3 3 0 0 0 16 5Zm-8 7a3 3 0 1 0-2.83-4H5a3 3 0 0 0 0 6h.17A3 3 0 0 0 8 12Zm8 7a3 3 0 1 0-2.83-4H13a3 3 0 0 0 0 6h.17a3 3 0 0 0 3-2ZM6.41 13.6l8-4.6 1 1.74-8 4.6-1-1.74Zm8.01 3.8 1-1.74 3.12 1.8-1 1.74-3.12-1.8Z"/></svg></span>
+            <small>Share</small>
+          </button>
+        </div>
+        <button class="exec-save" data-save type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2ZM19 9h-4V3H9v6H5l7 7 7-7Z"/></svg>
-          <span>Save Contact</span>
-          <i></i>
+          <span data-save-label>Save Contact</span>
         </button>
       </div>
+      <div class="exec-rows" data-rows></div>
+      <div class="exec-qrbox" data-qrbox>
+        <img data-qr alt="Card QR code">
+        <div>
+          <h3>QR Ready</h3>
+          <p data-share-url></p>
+          <div class="row">
+            <a class="exec-chip ghost" data-open target="_blank" rel="noopener">Open Card</a>
+            <button class="exec-chip" data-qr-copy type="button">Copy link</button>
+          </div>
+        </div>
+      </div>
+      <div class="exec-foot">Verified digital business card · Powered by CardFlow AI</div>
     </article>
   </template>
 
@@ -1605,6 +1740,65 @@
       };
     }
 
+    function copyPublicText(text, message) {
+      const done = () => showPublicToast(message || "Copied to clipboard");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => showPublicToast("Copy failed"));
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); done(); } catch { showPublicToast("Copy failed"); }
+        ta.remove();
+      }
+    }
+
+    function showPublicToast(message) {
+      let toast = document.querySelector(".exec-toast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.className = "exec-toast";
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.style.display = "flex";
+      window.clearTimeout(showPublicToast._t);
+      showPublicToast._t = window.setTimeout(() => { toast.style.display = "none"; }, 2200);
+    }
+
+    function sharePublicCard(card) {
+      const url = cardUrl(card);
+      if (navigator.share) {
+        navigator.share({ title: `${card.name} | Executive vCard`, text: `${card.name} — ${card.role || ""}`, url }).catch(() => {});
+      } else {
+        copyPublicText(url, "Link copied");
+      }
+    }
+
+    function execRow(label, value, href) {
+      const row = document.createElement("div");
+      row.className = "exec-row";
+      const text = document.createElement("div");
+      const lab = document.createElement("label");
+      lab.textContent = label;
+      text.appendChild(lab);
+      const link = document.createElement("a");
+      link.textContent = value;
+      if (href) { link.href = href; if (label === "Website" || label === "Address") { link.target = "_blank"; link.rel = "noopener"; } }
+      else { link.href = "#"; link.addEventListener("click", (e) => e.preventDefault()); }
+      text.appendChild(link);
+      const btn = document.createElement("button");
+      btn.className = "exec-copy";
+      btn.type = "button";
+      btn.setAttribute("aria-label", `Copy ${label}`);
+      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z"/></svg>';
+      btn.addEventListener("click", () => copyPublicText(value));
+      row.appendChild(text);
+      row.appendChild(btn);
+      return row;
+    }
+
     function renderCardInto(card, container, options = {}) {
       container.innerHTML = "";
       const node = publicTemplate.content.cloneNode(true);
@@ -1648,35 +1842,53 @@
       }
 
       if (logoSource) {
-        logo.classList.remove("initials");
-        logo.classList.add("has-image");
-        logo.style.background = "transparent";
-        logo.style.setProperty("--logo-scale", String((card.logoScale || 135) / 100));
-        logo.style.setProperty("--logo-color", logoColor);
-        logo.style.setProperty("--logo-image", `url("${cssUrl(logoSource)}")`);
-        logo.innerHTML = '<span class="logo-symbol" aria-hidden="true"></span>';
-        logo.setAttribute("aria-label", `${card.company || card.name} logo`);
+        logo.innerHTML = `<img src="${logoSource}" alt="${String(card.company || card.name || "logo").replace(/"/g, "&quot;")}">`;
       } else {
-        logo.classList.remove("has-image");
-        logo.classList.add("initials");
-        logo.style.removeProperty("--logo-scale");
-        logo.style.removeProperty("--logo-color");
-        logo.style.removeProperty("--logo-image");
-        logo.removeAttribute("aria-label");
         logo.textContent = initials(card.company || card.name);
-        logo.style.background = card.accent;
       }
 
       node.querySelector("[data-name]").textContent = card.name;
-      node.querySelector("[data-role]").textContent = card.role;
-      node.querySelector("[data-separator]").textContent = card.separatorText || "";
-      node.querySelector("[data-phone] span").textContent = card.phoneText || "Phone";
-      node.querySelector("[data-email] span").textContent = card.emailText || "Email";
-      node.querySelector("[data-website] span").textContent = card.websiteText || "Website";
-      node.querySelector("[data-save] span").textContent = card.saveText || "Save Contact";
-      node.querySelector("[data-phone]").href = `tel:${cleanPhone(card.phone)}`;
-      node.querySelector("[data-email]").href = `mailto:${card.email}`;
+      node.querySelector("[data-role]").textContent = card.role || "";
+      const bio = node.querySelector("[data-bio]");
+      if (card.role && card.company) { bio.textContent = card.company; }
+      else { bio.textContent = ""; bio.style.display = "none"; }
+      node.querySelector("[data-company]").textContent = card.company || card.name;
+      const tagline = node.querySelector("[data-tagline]");
+      tagline.textContent = card.separatorText || "Verified Digital Business Card";
+      const addrLabel = node.querySelector("[data-address-label]");
+      if (card.address) { addrLabel.textContent = card.address; }
+      else { addrLabel.style.display = "none"; }
+      node.querySelector("[data-phone-label]").textContent = card.phoneText || "Call";
+      node.querySelector("[data-email-label]").textContent = card.emailText || "Email";
+      node.querySelector("[data-website-label]").textContent = card.websiteText || "Global";
+      node.querySelector("[data-save-label]").textContent = card.saveText || "Save Contact";
+      node.querySelector("[data-phone]").href = card.phone ? `tel:${cleanPhone(card.phone)}` : "#";
+      node.querySelector("[data-email]").href = card.email ? `mailto:${card.email}` : "#";
       node.querySelector("[data-website]").href = websiteUrl(card.website);
+
+      const rows = node.querySelector("[data-rows]");
+      const rowDefs = [
+        card.phone ? ["Phone", card.phone, `tel:${cleanPhone(card.phone)}`] : null,
+        card.email ? ["Email", card.email, `mailto:${card.email}`] : null,
+        card.website ? ["Website", card.website, websiteUrl(card.website)] : null,
+        card.address ? ["Address", card.address, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(card.address)}`] : null
+      ].filter(Boolean);
+      if (!rowDefs.length || options.previewOnly) {
+        rows.style.display = "none";
+      } else {
+        rowDefs.forEach(([label, value, href]) => rows.appendChild(execRow(label, value, href)));
+      }
+
+      const qrBox = node.querySelector("[data-qrbox]");
+      if (options.previewOnly) {
+        qrBox.style.display = "none";
+      } else {
+        const shareUrl = cardUrl(card);
+        node.querySelector("[data-qr]").src = qrUrl(card);
+        node.querySelector("[data-share-url]").textContent = shareUrl;
+        node.querySelector("[data-open]").href = localCardUrl(card);
+        node.querySelector("[data-qr-copy]").addEventListener("click", () => copyPublicText(shareUrl, "Link copied"));
+      }
 
       if (options.previewOnly) {
         node.querySelectorAll("a, button").forEach((control) => {
@@ -1687,6 +1899,7 @@
         });
       } else {
         node.querySelector("[data-save]").addEventListener("click", () => downloadContact(card));
+        node.querySelector("[data-share]").addEventListener("click", () => sharePublicCard(card));
       }
 
       container.appendChild(node);
@@ -1817,16 +2030,17 @@
     function downloadContact(card) {
       const vcard = [
         "BEGIN:VCARD",
-        "VERSION:3.0",
+        "VERSION:4.0",
+        `N:${card.name};;;;`,
         `FN:${card.name}`,
-        `ORG:${card.company}`,
+        `ORG:${card.company};`,
         `TITLE:${card.role}`,
-        `TEL;TYPE=CELL:${card.phone}`,
-        `EMAIL:${card.email}`,
-        `URL:${websiteUrl(card.website)}`,
-        `ADR;TYPE=WORK:;;${String(card.address || "").replace(/\n/g, "\\n")}`,
+        `TEL;TYPE=cell,voice;VALUE=uri:tel:${cleanPhone(card.phone || "")}`,
+        `EMAIL;TYPE=work:${card.email || ""}`,
+        `URL;TYPE=work:${websiteUrl(card.website)}`,
+        `ADR;TYPE=work:;;${String(card.address || "").replace(/\n/g, "\\n")};;;;`,
         "END:VCARD"
-      ].join("\n");
+      ].join("\r\n");
 
       const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -1849,7 +2063,7 @@
         return;
       }
 
-      document.title = `${card.name} Digital Card`;
+      document.title = `${card.name} | Executive vCard`;
       renderCardInto(card, publicView);
     }
 
